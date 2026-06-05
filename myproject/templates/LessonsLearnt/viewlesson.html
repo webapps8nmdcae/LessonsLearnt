@@ -8,37 +8,37 @@
         </ol>
     </nav> -->
 
-    <div class="premium-card mb-4">
+    <div class="premium-card mb-2">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="fa-solid fa-search me-2"></i> SEARCH CRITERIA</h4>
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-2 mb-3">
+                <div class="col-md-3">
                     <label class="form-label">Project</label>
                     <select class="form-select select2" id="searchProject">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-2">
                     <label class="form-label">Client</label>
                     <select class="form-select select2" id="searchClient">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-3 mb-3">
+                <div class="col-md-2">
                     <label class="form-label">Category</label>
                     <select class="form-select select2" id="searchCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2 mb-3">
+                <div class="col-md-2">
                     <label class="form-label">Sub Category</label>
                     <select class="form-select select2" id="searchSubCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2 mb-3">
+                <div class="col-md-3">
                     <label class="form-label">Status</label>
                     <select class="form-select select2" id="searchStatus">
                         <option value="">All</option>
@@ -48,18 +48,19 @@
                     </select>
                 </div>
             </div>
+        </div>
+        <div class="card-footer m-2">
             <div class="d-flex justify-content-end">
+                <button type="button" id="btnClear" class="btn btn-light me-2 text-uppercase fw-bold shadow-sm" style="float:left; border: 1px solid #ccd0d5; color: #555;">
+                    <i class="fa-solid fa-eraser"></i> Clear
+                </button>
                 <button type="button" id="btnExport" class="btn btn-primary me-2 text-uppercase fw-bold shadow-sm">
                     <i class="fa-solid fa-download"></i> Export
                 </button>
-                <button type="button" id="btnClear" class="btn btn-light me-2 text-uppercase fw-bold shadow-sm" style="border: 1px solid #ccd0d5; color: #555;">
-                    <i class="fa-solid fa-eraser"></i> Clear
-                </button>
-                <button type="button" class="btn btn-primary text-uppercase fw-bold shadow-sm">
+                <button type="button" class="btn btn-primary text-uppercase fw-bold shadow-sm me-2">
                     <i class="fa-solid fa-search"></i> Search
                 </button>
-            </div>
-        </div>
+            </div></div>
     </div>
 
     <style>
@@ -110,6 +111,11 @@
         .dataTables_scrollHeadInner .premium-datatable {
             margin-top: 0 !important;
             margin-bottom: 0 !important;
+        }
+
+        #lessonsTable_filter {
+            padding-top: 0px;
+            margin-bottom: 9px;
         }
 
         .premium-datatable tbody td.actions-col {
