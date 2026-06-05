@@ -259,9 +259,9 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="fa-solid fa-list me-2"></i> LESSONS LEARNT RECORDS</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="overflow: auto;">
             <div class="">
-                <table id="lessonsTable" class="table table-sm table-striped premium-datatable nowrap" style="width:100%">
+                <table id="lessonsTable" class="table table-sm premium-datatable" width="100%">
                     <thead>
                         <tr>
                             <th class="dtr-control">Actions</th>
@@ -384,9 +384,9 @@
         var table = $('#lessonsTable').DataTable({
             pageLength: 10,
             ordering: true,
-            scrollX: true,
-            autoWidth: true,
-            responsive: false,
+            // scrollX: true,
+            // autoWidth: true,
+            // responsive: false,
             order: [[1, "desc"]],
             language: {
                 search: "_INPUT_",
