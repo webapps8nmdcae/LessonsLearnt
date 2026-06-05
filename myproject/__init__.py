@@ -33,3 +33,7 @@ from myproject.error_pages.handlers import error_pages
 
 app.register_blueprint(lessons_learnt_blueprint)
 app.register_blueprint(error_pages)
+
+@app.route('/')
+def index():
+    return redirect(url_for('LessonsLearnt.newlesson'))
