@@ -1,0 +1,1012 @@
+{% extends 'LessonsLearnt/Base.html' %}
+{% block title %}New Lesson Learnt{% endblock %}
+{% block content %}
+    <!-- <nav aria-label="breadcrumb" class="premium-breadcrumb mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/home"><i class="fa-solid fa-home"></i> HOME</a></li>
+            <li class="breadcrumb-item active" aria-current="page">NEW LESSON LEARNT</li>
+        </ol>
+    </nav> -->
+
+    <form id="newLessonForm" class="premium-card">
+        <div class="card-header d-flex justify-content-between align-items-center py-1">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; white-space: nowrap; color: var(--navy-mid);">Lesson Category <span class="text-danger">*</span></span>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="form-check mb-0 d-flex align-items-center">
+                            <input class="form-check-input" type="radio" name="originType" id="typeProject" value="project" checked style="margin-top: 0;">
+                            <label class="form-check-label fw-semibold ms-2" for="typeProject" style="font-size: 12px; cursor: pointer; white-space: nowrap; color: var(--navy-mid);">Project</label>
+                        </div>
+                        <div class="form-check mb-0 d-flex align-items-center">
+                            <input class="form-check-input" type="radio" name="originType" id="typeDepartment" value="department" style="margin-top: 0;">
+                            <label class="form-check-label fw-semibold ms-2" for="typeDepartment" style="font-size: 12px; cursor: pointer; white-space: nowrap; color: var(--navy-mid);">Department</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" id="btnClearForm" class="btn btn-light text-uppercase fw-bold shadow-sm" style="border: 1px solid #ccd0d5; color: #555; font-size: 11px; padding: 5px 12px;">
+                    <i class="fa-solid fa-times"></i> Clear
+                </button>
+                <button type="submit" class="btn btn-primary text-uppercase fw-bold shadow-sm" style="font-size: 11px; padding: 5px 12px;">
+                    <i class="fa-solid fa-save"></i> Submit Lesson
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <style>
+                .collapse-header[aria-expanded="true"] .fa-chevron-down { transform: rotate(180deg); transition: transform 0.3s ease; }
+                .collapse-header[aria-expanded="false"] .fa-chevron-down { transform: rotate(0deg); transition: transform 0.3s ease; }
+            </style>
+            <!-- Form inputs follow -->
+                
+                <!-- Section 1: Basic Information -->
+                <!-- <div class="mb-4 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff;"> -->
+                <div class="mb-2 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff;">
+                    <div class="d-flex justify-content-between align-items-center collapse-header" data-bs-toggle="collapse" data-bs-target="#collapseBasic" aria-expanded="true" aria-controls="collapseBasic" style="cursor: pointer; background-color: var(--header-blue); color: #ffffff; padding: 10px 15px;">
+                        <h6 class="mb-0 text-uppercase fw-bold text-white" style="font-size: 12px; letter-spacing: 0.5px;"><i class="fa-solid fa-circle-info me-2 text-white"></i>General</h6>
+                        <i class="fa-solid fa-chevron-down text-white" style="font-size: 12px;"></i>
+                    </div>
+                    
+                    <div class="collapse show" id="collapseBasic">
+                        <div class="p-3">
+                            <div class="row mb-2">
+                                <div class="col-md-4" id="projectContainer">
+                                    <label class="form-label">Project <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-sm select2" id="project" name="project" required>
+                                        <option value="">Select Project</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4" id="ClientContainer">
+                                    <label class="form-label">Client <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-sm select2" id="client" name="client" required>
+                                        <option value="">Select Client</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Supporting Document </label> &nbsp;<span style="font-size: 9px; color: #888;">Accepted formats: PDF, DOCX, XLSX, Images (Max 5MB)</span>
+                                    <input class="form-control form-control-sm" type="file" id="document" name="document" accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg" multiple>
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Background (Context) <span class="text-danger">*</span> <span style="font-size: 10px; color: #6c757d;">(Max 500 chars)</span></label>
+                                    <textarea class="form-control form-control-sm" id="background" name="background" rows="3" placeholder="What was the situation or problem?" required></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Lesson Learnt <span class="text-danger">*</span> <span style="font-size: 10px; color: #6c757d;">(Max 500 chars)</span></label>
+                                    <textarea class="form-control form-control-sm" id="lessonLearnt" name="lessonLearnt" rows="3" placeholder="What did we learn from this?" required></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <!-- File Preview Container -->
+                                    <style>
+                                        #filePreviewContainer::-webkit-scrollbar {
+                                            height: 6px;
+                                        }
+                                        #filePreviewContainer::-webkit-scrollbar-track {
+                                            background: #f1f5f9;
+                                            border-radius: 4px;
+                                        }
+                                        #filePreviewContainer::-webkit-scrollbar-thumb {
+                                            background: #cbd5e1;
+                                            border-radius: 4px;
+                                        }
+                                        #filePreviewContainer::-webkit-scrollbar-thumb:hover {
+                                            background: #94a3b8;
+                                        }
+                                    </style>
+                                    <div id="filePreviewContainer" style="display:flex; gap:6px; max-height:190px; overflow-x:auto; overflow-y:hidden; padding-bottom:8px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Category -->
+                <div class="mb-2 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff;">
+                    <div class="d-flex justify-content-between align-items-center collapse-header" data-bs-toggle="collapse" data-bs-target="#collapseDetails" aria-expanded="true" aria-controls="collapseDetails" style="cursor: pointer; background-color: var(--header-blue); color: #ffffff; padding: 10px 15px;">
+                        <h6 class="mb-0 text-uppercase fw-bold text-white" style="font-size: 12px; letter-spacing: 0.5px;"><i class="fa-solid fa-book-open me-2 text-white"></i>Category</h6>
+                        <i class="fa-solid fa-chevron-down text-white" style="font-size: 12px;"></i>
+                    </div>
+
+                    <div class="collapse show" id="collapseDetails">
+                        <div class="p-3">
+                            <style>
+                                .premium-tabs .nav-link {
+                                    font-weight: 600; color: #495057; background-color: #f8f9fa; margin-right: 5px; border-radius: 4px; border-bottom: 3px solid transparent; text-transform: uppercase; padding: 8px 16px;
+                                }
+                                .premium-tabs .nav-link.active {
+                                    color: #fff; background-color: var(--header-blue, #00508f); border-bottom: 3px solid #ffc107;
+                                }
+                                #categoryListGroup .list-group-item {
+                                    border: 1px solid #00508f;
+                                    border-radius: 6px;
+                                    margin-bottom: 5px;
+                                    font-weight: 500;
+                                    color: #334155;
+                                    background: #f8fafc;
+                                    transition: all 0.2s ease;
+                                    padding: 6px 10px;
+                                }
+                                #categoryListGroup .list-group-item:hover {
+                                    background: #e2e8f0;
+                                    transform: translateY(-1px);
+                                }
+                                #categoryListGroup .list-group-item.active {
+                                    background: var(--header-blue, #00508f);
+                                    color: #fff;
+                                    box-shadow: 0 4px 6px -1px rgba(0, 80, 143, 0.2);
+                                    border-color: var(--header-blue, #00508f);
+                                }
+                                
+                                #selectedSubCategoriesContainer {
+                                    background: #f8fafc !important;
+                                    border: 1px solid #e2e8f0 !important;
+                                    border-radius: 8px !important;
+                                    padding: 12px !important;
+                                    display: flex !important;
+                                    flex-wrap: wrap !important;
+                                    gap: 8px !important;
+                                    align-content: flex-start;
+                                }
+                                
+                                .premium-badge {
+                                    background: linear-gradient(135deg, var(--header-blue, #00508f) 0%, #003d73 100%);
+                                    color: white;
+                                    border-radius: 6px;
+                                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                    display: inline-flex;
+                                    align-items: center;
+                                    border: 1px solid rgba(255,255,255,0.1);
+                                    padding: 6px 10px !important;
+                                    width: fit-content;
+                                    margin-bottom: 0 !important;
+                                }
+                                .premium-badge .remove-sc {
+                                    background: rgba(255,255,255,0.2);
+                                    border-radius: 50%;
+                                    width: 20px;
+                                    height: 20px;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    transition: background 0.2s;
+                                    margin-left: 10px;
+                                }
+                                .premium-badge .remove-sc:hover {
+                                    background: rgba(255,0,0,0.6);
+                                }
+                                
+                                .premium-sc-item {
+                                    border: 1px solid #dbe3ee;
+                                    border-radius: 8px;
+                                    margin-bottom: 6px;
+                                    background: #ffffff;
+                                    padding: 8px 12px;
+                                    display: flex;
+                                    align-items: center;
+                                    cursor: pointer;
+                                    transition: all 0.2s ease;
+                                }
+
+                                .premium-sc-item:hover {
+                                    border-color: #2563eb;
+                                    background: #f8fbff;
+                                    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+                                }
+
+                                .premium-sc-item input.form-check-input {
+                                    margin-top: 0;
+                                    margin-right: 8px;
+                                    cursor: pointer;
+                                    accent-color: #2563eb;
+                                }
+
+                                .premium-sc-item label {
+                                    font-size: 12px;
+                                    font-weight: 500;
+                                    color: #334155;
+                                    margin: 0;
+                                    cursor: pointer;
+                                    flex-grow: 1;
+                                    line-height: 1.3;
+                                }
+                                
+                                #subCategoryCheckboxList {
+                                    background: #f8fafc !important;
+                                    border: 1px solid #e2e8f0 !important;
+                                    border-radius: 8px !important;
+                                }
+                            </style>
+                            <div id="dynamicCategorySection">
+                                <div class="nav nav-pills premium-tabs" id="categoryTypeTabs" role="tablist" aria-orientation="horizontal">
+                                </div>
+                                <div class="tab-content p-2 border rounded bg-light" id="categoryTypeTabContent">
+                                    <div class="row">
+                                        <div class="col-md-3 border-end">
+                                            <label class="form-label text-muted text-uppercase mb-2">Category</label>
+                                            <div class="list-group" id="categoryListGroup" role="tablist">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 border-end">
+                                            <label class="form-label text-muted text-uppercase mb-1">Sub Category</label>
+                                            <div id="subCategoryCheckboxList" class="p-2" style="max-height: 160px; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
+                                                <div class="text-muted p-2" style="text-transform: uppercase;">Select a category to view sub category.</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label text-muted text-uppercase mb-1">Selected Sub Category <span class="text-danger">*</span></label>
+                                            <div id="selectedSubCategoriesContainer" class="p-2 border rounded" style="max-height: 160px; overflow-y: auto; background: #fff;">
+                                                <div class="text-muted text-center" style="text-transform: uppercase;">No data selected</div>
+                                            </div>
+                                            <input type="hidden" id="selectedSubCategoryIds" name="subCategory" required>
+                                            <input type="hidden" id="selectedCategoryId" name="category" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Business Perspective & Attachments -->
+                <div class="mb-2 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff; ">
+                    <div class="d-flex justify-content-between align-items-center collapse-header" data-bs-toggle="collapse" data-bs-target="#collapseImpact" aria-expanded="false" aria-controls="collapseImpact" style="cursor: pointer; background-color: var(--header-blue); color: #ffffff; padding: 10px 15px;">
+                        <h6 class="mb-0 text-uppercase fw-bold text-white" style="font-size: 12px; letter-spacing: 0.5px;"><i class="fa-solid fa-chart-line me-2 text-white"></i>Business Impact</h6>
+                        <i class="fa-solid fa-chevron-down text-white" style="font-size: 12px;"></i>
+                    </div>
+
+                    <div class="collapse" id="collapseImpact">
+                        <div class="p-3">
+                            <div class="row mb-2">
+                                <div class="col-md-4">
+                                    <label class="form-label">Recommendations / Preventative Actions <span style="font-size: 10px; color: #6c757d;">(Max 500 chars)</span></label>
+                                    <textarea class="form-control form-control-sm" id="recommendations" name="recommendations" rows="5" placeholder="What actions should be taken to prevent recurrence or replicate success?"></textarea>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="mb-2">
+                                        <label class="form-label">Priority Level </label>
+                                        <select class="form-select form-select-sm select2" id="priority" name="priority">
+                                        </select>
+                                    </div>
+                                    <div>
+                                    <label class="form-label">Primary Business Impact </label>
+                                    <select class="form-select form-select-sm select2" id="impact" name="impact">
+                                    </select>
+                                    <!-- <div id="otherImpactContainer" style="display: none; margin-top: 5px;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" id="otherImpactInput" placeholder="Enter other impact area">
+                                            <button class="btn btn-primary btn-sm" type="button" id="addOtherImpactBtn">Add</button>
+                                        </div>
+                                    </div> -->
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                        <label class="form-label">Expertise</label>
+                                        <textarea class="form-control form-control-sm" id="expertiseField" name="expertise" readonly
+                                            placeholder="" rows="4"
+                                            style="background:#f7fafd; color:#1a3c5e; font-weight:600; border:1px solid #d0dae6; cursor:default;"></textarea>
+                                        <input type="hidden" id="selectedExpertiseIds" name="expertiseIds">
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Buttons are in the card header -->
+
+            <!-- File Preview Modal -->
+            <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content" style="border-radius:8px; border:none; box-shadow:0 8px 32px rgba(0,80,143,0.18);">
+                        <div class="modal-header py-2 px-3" style="background:var(--header-blue); border-radius:8px 8px 0 0;">
+                            <h6 class="modal-title text-white fw-bold text-uppercase mb-0" id="filePreviewModalLabel" style="font-size:12px; letter-spacing:0.5px;">
+                                <i class="fa-solid fa-eye me-2"></i><span id="modalPreviewFileName">Document Preview</span>
+                            </h6>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-0" id="previewModalBody" style="min-height:480px; background:#f4f6f9;">
+                            <!-- Content injected by JS -->
+                        </div>
+                        <div class="modal-footer py-2 px-3" style="background:#f7fafd; border-top:1px solid #e0e7ef;">
+                            <a id="modalDownloadBtn" href="#" download class="btn btn-sm btn-success fw-bold" style="font-size:11px;">
+                                <i class="fa-solid fa-download me-1"></i> Download
+                            </a>
+                            <button type="button" class="btn btn-sm btn-secondary fw-bold" data-bs-dismiss="modal" style="font-size:11px;">
+                                <i class="fa-solid fa-xmark me-1"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // ---- File Preview / Download Logic ----
+    (function() {
+        var currentObjectURLs = {};
+
+        var FILE_ICONS = {
+            'pdf':  { icon: '<i class="fa-solid fa-file-pdf" style="color:#e74c3c;"></i>', label: 'PDF' },
+            'docx': { icon: '<i class="fa-solid fa-file-word" style="color:#2980b9;"></i>', label: 'Word' },
+            'doc':  { icon: '<i class="fa-solid fa-file-word" style="color:#2980b9;"></i>', label: 'Word' },
+            'xlsx': { icon: '<i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>', label: 'Excel' },
+            'xls':  { icon: '<i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>', label: 'Excel' },
+            'png':  { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>', label: 'Image' },
+            'jpg':  { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>', label: 'Image' },
+            'jpeg': { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>', label: 'Image' },
+        };
+
+        function formatBytes(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        function getExt(name) {
+            return name.split('.').pop().toLowerCase();
+        }
+
+        function clearFilePreview() {
+            Object.values(currentObjectURLs).forEach(url => URL.revokeObjectURL(url));
+            currentObjectURLs = {};
+            $('#filePreviewContainer').empty();
+            $('#modalDownloadBtn').attr('href', '#').attr('download', '');
+        }
+
+        document.getElementById('document').addEventListener('change', function() {
+            clearFilePreview();
+            var files = this.files;
+            if (files.length === 0) return;
+
+            Array.from(files).forEach((file, index) => {
+                var ext = getExt(file.name);
+                var iconInfo = FILE_ICONS[ext] || { icon: '<i class="fa-solid fa-file" style="color:#7f8c8d;"></i>', label: ext.toUpperCase() };
+
+                var objUrl = URL.createObjectURL(file);
+                currentObjectURLs[index] = objUrl;
+
+                var isPreviewable = ['pdf','png','jpg','jpeg'].includes(ext);
+                var previewBtnHtml = isPreviewable ? 
+                    `<button type="button" class="btn-preview-file" data-index="${index}" title="Preview" style="color:#00508f; padding:0; border:none; background:transparent; line-height:1;">
+                        <i class="fa-solid fa-eye"></i> 
+                    </button>` : '';
+
+                var cardHtml = `
+                    <div class="file-preview-card d-flex flex-column" style="border:1px solid #d0dae6; border-radius:6px; background:#fff; padding:6px 8px; width:140px; flex-shrink:0;">
+                        <div class="d-flex align-items-start mb-2" style="gap:6px;">
+                            <span style="font-size:18px; line-height:1;">${iconInfo.icon}</span>
+                            <div style="font-size:10px; font-weight:600; color:#1a3c5e; line-height:1.2; word-wrap:break-word; word-break:break-word; max-height:36px; overflow:hidden;" title="${file.name}">
+                                ${file.name}
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-auto">
+                            <span style="font-size:9px; color:#888;">${formatBytes(file.size)}</span>
+                            <div class="d-flex" style="gap:8px;">
+                                ${previewBtnHtml}
+                                <a href="${objUrl}" download="${file.name}" title="Download" style="color:#18794e; padding:0; border:none; background:transparent; line-height:1; display:flex; align-items:center;">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                                <button type="button" class="btn-remove-file" data-index="${index}" title="Remove" style="color:#c0392b; padding:0; border:none; background:transparent; line-height:1; display:flex; align-items:center;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $('#filePreviewContainer').append(cardHtml);
+            });
+        });
+
+        $(document).on('click', '.btn-preview-file', function() {
+            var index = $(this).data('index');
+            var file = document.getElementById('document').files[index];
+            if (!file) return;
+            var objUrl = currentObjectURLs[index];
+            var ext = getExt(file.name);
+            var body = document.getElementById('previewModalBody');
+
+            document.getElementById('modalPreviewFileName').textContent = file.name;
+            document.getElementById('modalDownloadBtn').href = objUrl;
+            document.getElementById('modalDownloadBtn').setAttribute('download', file.name);
+
+            if (ext === 'pdf') {
+                body.innerHTML = '<iframe src="' + objUrl + '#toolbar=1" style="width:100%; height:600px; border:none;"></iframe>';
+            } else {
+                body.innerHTML = '<div style="text-align:center; padding:20px;"><img src="' + objUrl + '" style="max-width:100%; max-height:560px; border-radius:6px; box-shadow:0 2px 12px rgba(0,0,0,0.12);"></div>';
+            }
+            
+            var modal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
+            modal.show();
+        });
+
+        $(document).on('click', '.btn-remove-file', function() {
+            var index = $(this).data('index');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to remove this file?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var dt = new DataTransfer();
+                    var input = document.getElementById('document');
+                    var files = input.files;
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        if (i !== parseInt(index)) {
+                            dt.items.add(files[i]);
+                        }
+                    }
+                    
+                    input.files = dt.files;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        });
+
+        // Also clear preview on form clear button click (hook into clear button)
+        document.getElementById('btnClearForm').addEventListener('click', function() {
+            clearFilePreview();
+        });
+    })();
+
+    var masterData = {
+        categories: [],
+        subcategories: []
+    };
+
+    function loadMasterData() {
+        $.ajax({
+            url: '/GetMasterData',
+            method: 'GET',
+            success: function(response) {
+                masterData.categories = response.categories;
+                masterData.subcategories = response.subcategories;
+                masterData.priorities = response.priorities;
+                masterData.impactareas = response.impactareas;
+
+                // Bind Projects
+                var projectSelect = $('#project');
+                projectSelect.empty().append('<option value="">Select Project</option>');
+                response.projects.forEach(function(p) {
+                    projectSelect.append(new Option(p.ProjectCode + ' - ' + p.Name, p.Id));
+                });
+
+                // Bind Clients
+                var clientSelect = $('#client');
+                clientSelect.empty().append('<option value="">Select Client</option>');
+                response.clients.forEach(function(c) {
+                    clientSelect.append(new Option(c.Name, c.Id));
+                });
+
+                // Bind Priorities
+                var prioritySelect = $('#priority');
+                prioritySelect.empty().append('<option value="">Select Priority</option>');
+                response.priorities.forEach(function(p) {
+                    prioritySelect.append(new Option(p.PriorityLevel, p.Id));
+                });
+
+                // Bind Impact Areas
+                var impactAreaSelect = $('#impact');
+                impactAreaSelect.empty().append('<option value="">Select Impact Area</option>');
+                response.impactareas.forEach(function(i) {
+                    impactAreaSelect.append(new Option(i.PrimaryBusinessImpact, i.Id));
+                });
+
+                bindCategoryDropdown();
+            },
+            error: function() {
+                console.error("Failed to load master data");
+            }
+        });
+    }
+
+    function bindCategoryDropdown() {
+        var originType = $('input[name="originType"]:checked').val();
+        
+        // Get distinct CategoryTypes
+        var distinctTypes = [...new Set(masterData.categories.map(c => c.CategoryType))];
+        
+        // Generate Tabs
+        var tabsHtml = '';
+        var firstActiveType = null;
+
+        distinctTypes.forEach(function(type, index) {
+            var isDisabled = false;
+            var isActive = false;
+            
+            if (originType === 'project') {
+                if (type.toLowerCase().includes('activity') || type.toLowerCase().includes('operation')) {
+                    isActive = true;
+                } else if (type.toLowerCase().includes('support') || type.toLowerCase().includes('function')) {
+                    isDisabled = true;
+                }
+            } else if (originType === 'department') {
+                if (type.toLowerCase().includes('support') || type.toLowerCase().includes('function')) {
+                    isActive = true;
+                } else if (type.toLowerCase().includes('activity') || type.toLowerCase().includes('operation')) {
+                    isDisabled = true;
+                }
+            }
+
+            if(isActive) firstActiveType = type;
+            
+            var activeClass = isActive ? 'active' : '';
+            var disabledAttr = isDisabled ? 'disabled' : '';
+            
+            var typeId = type.replace(/[\s\/&]+/g, '-');
+            tabsHtml += `<button class="nav-link ${activeClass}" id="tab-${typeId}" data-bs-toggle="tab" data-type="${type}" type="button" role="tab" ${disabledAttr}>${type}</button>`;
+        });
+        
+        $('#categoryTypeTabs').html(tabsHtml);
+        
+        // Ensure at least one is active if none matched filterType
+        if (!firstActiveType && distinctTypes.length > 0) {
+            var availableTypes = distinctTypes.filter(t => {
+                if (originType === 'project') return !(t.toLowerCase().includes('support') || t.toLowerCase().includes('function'));
+                return !(t.toLowerCase().includes('activity') || t.toLowerCase().includes('operation'));
+            });
+            firstActiveType = availableTypes.length > 0 ? availableTypes[0] : distinctTypes[0];
+            $(`#categoryTypeTabs button[data-type="${firstActiveType}"]`).addClass('active');
+        }
+
+        // When a tab is clicked, update the category list
+        $('#categoryTypeTabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var selectedType = $(e.target).data('type');
+            renderCategoryList(selectedType);
+        });
+
+        // Initialize with the active tab
+        if (firstActiveType) {
+            renderCategoryList(firstActiveType);
+        }
+    }
+
+    var selectedSubCategoriesMap = {}; // Store selected items across categories
+
+    function renderCategoryList(type) {
+        // Clear selected details when CategoryType tab changes
+        selectedSubCategoriesMap = {};
+        updateSelectedSubCategoriesUI();
+        updateExpertise();
+
+        var categories = masterData.categories.filter(c => c.CategoryType === type);
+        var listHtml = '';
+        categories.forEach(function(c) {
+            listHtml += `<a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-id="${c.Id}">${c.Category} <i class="fa-solid fa-chevron-right ms-2" style="font-size: 10px; opacity: 0.5;"></i></a>`;
+        });
+        $('#categoryListGroup').html(listHtml);
+        
+        // Reset subcategory checkboxes and hidden category input
+        $('#subCategoryCheckboxList').html('<div class="text-muted form-text" style="text-transform: uppercase;">Select a Category to view Sub Category.</div>');
+        $('#selectedCategoryId').val('');
+        
+        // Click event for categories
+        $('#categoryListGroup .list-group-item').on('click', function(e) {
+            e.preventDefault();
+            $('#categoryListGroup .list-group-item').removeClass('active');
+            $(this).addClass('active');
+            
+            var categoryId = $(this).data('id');
+            var categoryName = $(this).text();
+            $('#selectedCategoryId').val(categoryId); // Keeps track of last selected category for form
+            
+            // Populate sub categories as checkboxes
+            var subCategories = masterData.subcategories.filter(sc => sc.CategoryId == categoryId);
+            var subCatHtml = '';
+            
+            subCategories.forEach(function(sc) {
+                var isChecked = selectedSubCategoriesMap[sc.Id] ? 'checked' : '';
+                subCatHtml += `
+                    <label class="premium-sc-item" for="sc_${sc.Id}">
+                        <input class="form-check-input subcategory-cb" type="checkbox" value="${sc.Id}" id="sc_${sc.Id}" data-name="${sc.SubCategory}" data-catid="${categoryId}" data-catname="${categoryName}" data-expertiseid="${sc.ExpertiseId || ''}" data-expertisename="${sc.ExpertiseName || ''}" ${isChecked}>
+                        <span>${sc.SubCategory}</span>
+                    </label>
+                `;
+            });
+
+            if (subCategories.length === 0) {
+                subCatHtml = '<div class="text-muted p-2" style="font-size:12px;">No subcategories found.</div>';
+            }
+
+            $('#subCategoryCheckboxList').html(subCatHtml);
+            
+            $('.subcategory-cb').on('change', function() {
+                var scId = $(this).val();
+                if ($(this).is(':checked')) {
+                    selectedSubCategoriesMap[scId] = {
+                        id: scId,
+                        name: $(this).data('name'),
+                        catId: $(this).data('catid'),
+                        catName: $(this).data('catname'),
+                        expertiseId: $(this).data('expertiseid'),
+                        expertiseName: $(this).data('expertisename')
+                    };
+                } else {
+                    delete selectedSubCategoriesMap[scId];
+                }
+                updateSelectedSubCategoriesUI();
+                updateExpertise();
+            });
+            
+            updateExpertise();
+        });
+    }
+
+    function updateSelectedSubCategoriesUI() {
+        var container = $('#selectedSubCategoriesContainer');
+        container.empty();
+        
+        var selectedIds = Object.keys(selectedSubCategoriesMap);
+        
+        if (selectedIds.length === 0) {
+            container.html('<div class="text-muted form-text text-center" style="text-transform:uppercase;">No sub-categories selected</div>');
+            $('#selectedSubCategoryIds').val('');
+            return;
+        }
+        
+        var html = '';
+        selectedIds.forEach(function(id) {
+            var item = selectedSubCategoriesMap[id];
+            html += `
+                <div class="premium-badge mb-2 justify-content-between" style="font-size: 11.5px; white-space: normal; text-align: left;">
+                    <span><strong style="color: #ffc107;">${item.catName}</strong>: ${item.name}</span>
+                    <i class="fa-solid fa-times text-white remove-sc" data-id="${id}" style="cursor:pointer;" title="Remove"></i>
+                </div>
+            `;
+        });
+        container.html(html);
+        $('#selectedSubCategoryIds').val(selectedIds.join(','));
+        
+        // Bind remove event
+        $('.remove-sc').on('click', function() {
+            var idToRemove = $(this).data('id');
+            delete selectedSubCategoriesMap[idToRemove];
+            
+            // Uncheck checkbox if it's currently rendered in the UI
+            $('#sc_' + idToRemove).prop('checked', false);
+            
+            updateSelectedSubCategoriesUI();
+            updateExpertise();
+        });
+    }
+
+    function updateExpertise() {
+        var expertiseNames = [];
+        var expertiseIds = [];
+        Object.keys(selectedSubCategoriesMap).forEach(function(scId) {
+            var item = selectedSubCategoriesMap[scId];
+            var expName = item.expertiseName ? String(item.expertiseName).trim() : '';
+            if (expName && expName.toLowerCase() !== 'none' && expName.toLowerCase() !== 'null') {
+                var names = expName.split(',');
+                names.forEach(function(name) {
+                    var trimmedName = name.trim();
+                    if (trimmedName && !expertiseNames.includes(trimmedName) && trimmedName.toLowerCase() !== 'none' && trimmedName.toLowerCase() !== 'null') {
+                        expertiseNames.push(trimmedName);
+                    }
+                });
+            }
+            
+            var expId = item.expertiseId ? String(item.expertiseId).trim() : '';
+            if (expId && expId.toLowerCase() !== 'none' && expId.toLowerCase() !== 'null') {
+                var ids = expId.split(',');
+                ids.forEach(function(id) {
+                    var trimmedId = id.trim();
+                    if (trimmedId && !expertiseIds.includes(trimmedId) && trimmedId.toLowerCase() !== 'none' && trimmedId.toLowerCase() !== 'null') {
+                        expertiseIds.push(trimmedId);
+                    }
+                });
+            }
+        });
+        
+        $('#expertiseField').val(expertiseNames.join(', '));
+        $('#selectedExpertiseIds').val(expertiseIds.join(','));
+    }
+
+    $(document).ready(function() {
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
+
+        // Restrict fields to 500 characters and show alert
+        const fieldsToLimit = ['#background', '#lessonLearnt', '#recommendations'];
+        fieldsToLimit.forEach(function(selector) {
+            $(selector).on('input', function(e) {
+                if ($(this).val().length > 500) {
+                    $(this).val($(this).val().substring(0, 500));
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Character Limit Exceeded',
+                        text: 'This field is restricted to a maximum of 500 characters.',
+                        confirmButtonColor: '#00508f'
+                    });
+                }
+            });
+        });
+
+        // Load data on page load
+        loadMasterData();
+
+        // Toggle category tabs based on Lesson Category radio selection
+        $('input[name="originType"]').on('change', function() {
+            var selectedType = $(this).val();
+            if (selectedType === 'project') {
+                $('#project').prop('required', true);
+            } else {
+                $('#project').prop('required', true); 
+            }
+            bindCategoryDropdown();
+            updateExpertise();
+        });
+
+        // Form Submission Logic
+        $('#newLessonForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            var isValid = true;
+            var missingFields = [];
+
+            var mandatoryFields = [
+                { selector: '#project', name: 'Project' },
+                { selector: '#client', name: 'Client' },
+                { selector: '#background', name: 'Background (Context)' },
+                { selector: '#lessonLearnt', name: 'Lesson Learnt' }
+            ];
+
+            mandatoryFields.forEach(function(field) {
+                var el = $(field.selector);
+                // Only validate if the element is currently required (Project might not be if department is selected)
+                if (el.length && el.prop('required') && (el.val() === '' || el.val() === null)) {
+                    isValid = false;
+                    missingFields.push(field.name);
+                    if (el.hasClass('select2') || el.data('select2')) {
+                        el.next('.select2-container').find('.select2-selection').css('border-color', '#dc3545');
+                    } else {
+                        el.addClass('is-invalid');
+                    }
+                } else if (el.length) {
+                    if (el.hasClass('select2') || el.data('select2')) {
+                        el.next('.select2-container').find('.select2-selection').css('border-color', '');
+                    } else {
+                        el.removeClass('is-invalid');
+                    }
+                }
+            });
+
+            $(this).find('[required]').each(function() {
+                var el = $(this);
+                // Skip the ones we already validated explicitly
+                if (['project', 'client', 'background', 'lessonLearnt'].includes(el.attr('id'))) return;
+                
+                if (el.val() === '' || el.val() === null) {
+                    isValid = false;
+                    if (el.hasClass('select2') || el.data('select2')) {
+                        el.next('.select2-container').find('.select2-selection').css('border-color', '#dc3545');
+                    } else {
+                        el.addClass('is-invalid');
+                    }
+                } else {
+                    if (el.hasClass('select2') || el.data('select2')) {
+                        el.next('.select2-container').find('.select2-selection').css('border-color', '');
+                    } else {
+                        el.removeClass('is-invalid');
+                    }
+                }
+            });
+
+            if (!isValid) {
+                var errorMsg = missingFields.length > 0 
+                    ? 'Please fill in the mandatory fields: ' + missingFields.join(', ')
+                    : 'Please fill in all mandatory fields.';
+                
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: errorMsg,
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#00508f'
+                });
+                return;
+            }
+            
+            // Validate other mandatory fields
+            // var manualMandatory = ['#priority', '#impact'];
+            // manualMandatory.forEach(function(selector) {
+            //     var el = $(selector);
+            //     if (el.length && (el.val() === '' || el.val() === null)) {
+            //         isValid = false;
+            //         if (el.hasClass('select2')) {
+            //             el.next('.select2-container').find('.select2-selection').css('border-color', '#dc3545');
+            //         } else {
+            //             el.addClass('is-invalid');
+            //         }
+            //     } else {
+            //         if (el.hasClass('select2')) {
+            //             el.next('.select2-container').find('.select2-selection').css('border-color', '');
+            //         } else {
+            //             el.removeClass('is-invalid');
+            //         }
+            //     }
+            // });
+            
+            if (Object.keys(selectedSubCategoriesMap).length === 0) {
+                isValid = false;
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please select at least one subcategory.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#00508f'
+                });
+                return;
+            }
+
+            if (isValid) {
+                Swal.fire({
+                    title: 'Confirm Submission',
+                    text: "Are you sure you want to save this lesson learnt?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#00508f',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, save it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loader
+                        $('#global-loader').css('display', 'flex');
+                        
+                        var formData = new FormData(this);
+                        
+                        var activeTabId = $('#categoryTypeTabs .nav-link.active').attr('id');
+                        if (activeTabId) {
+                            formData.append('activeTabId', activeTabId);
+                        }
+                        
+                        var formCategoryData = [];
+                        Object.keys(selectedSubCategoriesMap).forEach(function(scId) {
+                            var item = selectedSubCategoriesMap[scId];
+                            var categoryItem = masterData.categories.find(c => c.Id == item.catId);
+                            if (categoryItem) {
+                                formCategoryData.push({
+                                    categoryId: item.catId,
+                                    subCategoryId: scId,
+                                    categoryTypeId: categoryItem.CategoryTypeId
+                                });
+                            }
+                        });
+                        formData.append('formCategoryData', JSON.stringify(formCategoryData));
+                        
+                        $.ajax({
+                            url: '/SaveLessonLearn',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                $('#global-loader').hide();
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Lesson learnt has been submitted successfully.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#00508f'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $('#btnClearForm').click();
+                                    }
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                $('#global-loader').hide();
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Failed to save lesson: ' + (xhr.responseJSON ? xhr.responseJSON.message : error),
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#00508f'
+                                });
+                            }
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please fill in all required fields.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#00508f'
+                });
+            }
+        });
+
+        // Clear button — full form reset
+        $('#btnClearForm').on('click', function() {
+            // Reset native form fields (text, textarea, file, radio)
+            $('#newLessonForm')[0].reset();
+
+            // Reset all Select2 dropdowns
+            $('#newLessonForm .select2').val('').trigger('change');
+
+            // Remove any validation error highlights
+            $('#newLessonForm .is-invalid').removeClass('is-invalid');
+
+            // Reset radio to 'Project' — Project is always visible
+            $('#typeProject').prop('checked', true);
+            $('#project').prop('required', true);
+
+            bindCategoryDropdown();
+            updateExpertise();
+
+            // Hide 'Other Impact' input if visible
+            $('#otherImpactContainer').hide();
+            $('#otherImpactInput').val('');
+
+            // Reset expertise field
+            $('#expertiseField').val('');
+            $('#selectedExpertiseIds').val('');
+        });
+
+        // ---- Expertise auto-fill based on Operation category radio ----
+        var EXPERTISE_MAP = {
+            'Dredging': 'Pieter Steverlynck',
+            'Geotech':  'Ibrahim',
+            'QHSE':     'Sajid'
+        };
+
+        function updateExpertise() {
+            var activeCategory = $('#categoryListGroup .list-group-item.active').text();
+            var expert = '';
+            if (activeCategory) {
+                expert = EXPERTISE_MAP[activeCategory] || '';
+            }
+            $('#expertiseField').val(expert);
+        }
+
+        // Handle 'Other' Primary Business Impact
+        $('#impact').on('change', function() {
+            if ($(this).val() === 'other') {
+                $('#otherImpactContainer').show();
+                $('#otherImpactInput').focus();
+            } else {
+                $('#otherImpactContainer').hide();
+                $('#otherImpactInput').val('');
+            }
+        });
+
+        $('#addOtherImpactBtn').on('click', function() {
+            var newImpact = $('#otherImpactInput').val().trim();
+            if (newImpact !== '') {
+                // Check if it already exists
+                if ($('#impact option').filter(function() { return $(this).text().toLowerCase() === newImpact.toLowerCase(); }).length === 0) {
+                    var newOption = new Option(newImpact, newImpact, true, true);
+                    $('#impact').append(newOption).trigger('change');
+                } else {
+                    // If it exists, just select it
+                    var existingVal = $('#impact option').filter(function() { return $(this).text().toLowerCase() === newImpact.toLowerCase(); }).val();
+                    $('#impact').val(existingVal).trigger('change');
+                }
+                // Option 'other' is no longer selected, so container hides automatically due to 'change' event
+            }
+        });
+    });
+</script>
+{% endblock %}

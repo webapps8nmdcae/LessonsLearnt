@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Components Showcase</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="mb-4 text-primary">UI Components Showcase</h1>
+
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="inputs-tab" data-bs-toggle="tab" data-bs-target="#inputs-pane" type="button" role="tab" aria-controls="inputs-pane" aria-selected="true">Forms & Inputs</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="layout-tab" data-bs-toggle="tab" data-bs-target="#layout-pane" type="button" role="tab" aria-controls="layout-pane" aria-selected="false">Accordion & Collapse</button>
+        </li>
+    </ul>
+
+    <!-- Tabs Content -->
+    <div class="tab-content mt-4" id="myTabContent">
+        
+        <!-- Tab 1: Forms & Inputs -->
+        <div class="tab-pane fade show active" id="inputs-pane" role="tabpanel" aria-labelledby="inputs-tab" tabindex="0">
+            <form id="demoForm">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="textInput" class="form-label">Text Input</label>
+                        <input type="text" class="form-control" id="textInput" placeholder="Enter some text">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dropdownInput" class="form-label">Dropdown / Select</label>
+                        <select class="form-select" id="dropdownInput">
+                            <option selected disabled>Select an option</option>
+                            <option value="1">Option One</option>
+                            <option value="2">Option Two</option>
+                            <option value="3">Option Three</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label d-block">Radio Buttons</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radioOptions" id="radio1" value="1">
+                            <label class="form-check-label" for="radio1">Choice 1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radioOptions" id="radio2" value="2">
+                            <label class="form-check-label" for="radio2">Choice 2</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label d-block">Checkboxes</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="checkbox1" value="1">
+                            <label class="form-check-label" for="checkbox1">Check 1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="checkbox2" value="2">
+                            <label class="form-check-label" for="checkbox2">Check 2</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="fileInput" class="form-label">File Upload Control</label>
+                    <input class="form-control" type="file" id="fileInput">
+                </div>
+                
+                <button type="submit" class="btn btn-primary px-4">Submit</button>
+                <button type="reset" class="btn btn-outline-secondary px-4 ms-2">Reset</button>
+            </form>
+        </div>
+
+        <!-- Tab 2: Accordion & Collapse -->
+        <div class="tab-pane fade" id="layout-pane" role="tabpanel" aria-labelledby="layout-tab" tabindex="0">
+            
+            <h4 class="mb-3">Accordion Example</h4>
+            <div class="accordion mb-5" id="myAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Accordion Item #1
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#myAccordion">
+                        <div class="accordion-body">
+                            <strong>This is the first item's body.</strong> It's visible by default.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Accordion Item #2
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#myAccordion">
+                        <div class="accordion-body">
+                            <strong>This is the second item's body.</strong> It is hidden by default until clicked.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="mb-3">Collapse / Expand Example</h4>
+            <p>
+                <button class="btn btn-info text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTarget" aria-expanded="false" aria-controls="collapseTarget">
+                    Toggle Expand / Collapse
+                </button>
+            </p>
+            <div class="collapse" id="collapseTarget">
+                <div class="card card-body bg-light border-info">
+                    This content is hidden inside a collapsible container. When you click the toggle button above, this container expands or collapses using Bootstrap's JavaScript plugins.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle (includes Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom jQuery Script -->
+<script>
+    $(document).ready(function() {
+        console.log("jQuery is ready and functioning!");
+        
+        // Handle form submission via jQuery
+        $('#demoForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent page reload
+            alert('Form submitted successfully! (This is a jQuery intercept)');
+        });
+    });
+</script>
+</body>
+</html>

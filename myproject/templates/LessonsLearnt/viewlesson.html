@@ -1,0 +1,888 @@
+{% extends 'LessonsLearnt/Base.html' %}
+{% block title %}View Lessons Learnt{% endblock %}
+{% block content %}
+    <!-- <nav aria-label="breadcrumb" class="premium-breadcrumb mb-4">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/home"><i class="fa-solid fa-home"></i> HOME</a></li>
+            <li class="breadcrumb-item active" aria-current="page">VIEW LESSONS LEARNT</li>
+        </ol>
+    </nav> -->
+
+    <div class="premium-card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fa-solid fa-search me-2"></i> SEARCH CRITERIA</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Project</label>
+                    <select class="form-select select2" id="searchProject">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Client</label>
+                    <select class="form-select select2" id="searchClient">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select select2" id="searchCategory">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Sub Category</label>
+                    <select class="form-select select2" id="searchSubCategory">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select select2" id="searchStatus">
+                        <option value="">All</option>
+                        <option value="pending">Pending Approval</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="button" id="btnExport" class="btn btn-primary me-2 text-uppercase fw-bold shadow-sm">
+                    <i class="fa-solid fa-download"></i> Export
+                </button>
+                <button type="button" id="btnClear" class="btn btn-light me-2 text-uppercase fw-bold shadow-sm" style="border: 1px solid #ccd0d5; color: #555;">
+                    <i class="fa-solid fa-eraser"></i> Clear
+                </button>
+                <button type="button" class="btn btn-primary text-uppercase fw-bold shadow-sm">
+                    <i class="fa-solid fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Premium Table Adjustments */
+        .premium-datatable {
+            border-collapse: separate !important;
+            border-spacing: 0;
+            border-radius: 6px;
+            border: 1px solid #e0e7ef;
+            overflow: hidden;
+            margin-top: 10px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .premium-datatable thead th {
+            /* background-color: #00508f;
+            color: #ffffff; */
+            background-color: var(--header-blue) !important;
+            color: #dce6ee !important;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: none !important;
+            padding: 8px 10px !important;
+            border-top: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center !important;
+        }
+        .premium-datatable thead th:last-child {
+            border-right: none;
+        }
+        .premium-datatable tbody td {
+            border-bottom: 1px solid #eaedf1;
+            border-right: 1px solid #f4f6f9;
+            padding: 6px 10px !important;
+            color: #333;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+        
+        /* Fix for DataTables scrollX hidden header */
+        .dataTables_scrollBody thead th,
+        .dataTables_scrollBody thead td {
+            padding: 0 !important;
+            border: none !important;
+            height: 0 !important;
+        }
+        .dataTables_scrollBody .premium-datatable,
+        .dataTables_scrollHeadInner .premium-datatable {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .premium-datatable tbody td.actions-col {
+            white-space: nowrap;
+            text-align: center;
+        }
+        .premium-datatable tbody td:last-child {
+            border-right: none;
+        }
+        .premium-datatable tbody tr:nth-of-type(even) {
+            background-color: #f8fbff;
+        }
+        .premium-datatable tbody tr:hover {
+            background-color: #eaf3ff !important;
+            transition: background-color 0.2s ease;
+        }
+        .premium-datatable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .truncate-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+            display: inline-block;
+            vertical-align: middle;
+            font-weight: 500;
+            color: #00508f;
+        }
+        
+        /* Premium Badges */
+        .badge-premium {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 3px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .bg-status-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .bg-status-completed { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .bg-status-rejected { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Category Premium Badge */
+        .premium-badge {
+            background: linear-gradient(135deg, var(--header-blue, #00508f) 0%, #003d73 100%);
+            color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 4px 8px !important;
+            width: fit-content;
+            margin-bottom: 4px !important;
+            font-size: 10.5px;
+            line-height: 1.2;
+            white-space: normal;
+            text-align: left;
+        }
+
+        /* Premium Action Buttons */
+        .btn-action-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            font-size: 13.5px;
+        }
+        .btn-action-icon.edit { color: var(--header-blue, #00508f); }
+        .btn-action-icon.edit:hover { background: #eaf3ff; color: #003d73; transform: scale(1.15); }
+        .btn-action-icon.delete { color: #dc3545; }
+        .btn-action-icon.delete:hover { background: #fee2e2; color: #b02a37; transform: scale(1.15); }
+
+        /* Premium Attachment Icon */
+        .btn-attachment-icon {
+            background: transparent !important;
+            border: none !important;
+            color: #64748b;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+        }
+        .btn-attachment-icon:hover {
+            color: var(--header-blue, #00508f);
+            background: #eaf3ff !important;
+            transform: translateY(-1px);
+        }
+        .btn-attachment-icon .badge {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 12px;
+            background-color: var(--header-blue, #00508f) !important;
+            color: white;
+        }
+
+        /* Premium Tooltip */
+        .tooltip-inner {
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border-radius: 6px !important;
+            padding: 10px 14px !important;
+            font-size: 11.5px !important;
+            font-weight: 500 !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+            max-width: 320px !important;
+            text-align: left !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            letter-spacing: 0.3px;
+            line-height: 1.5;
+        }
+        .tooltip.bs-tooltip-top .tooltip-arrow::before,
+        .tooltip.bs-tooltip-auto[data-popper-placement^=top] .tooltip-arrow::before {
+            border-top-color: #1e293b !important;
+        }
+        .tooltip.bs-tooltip-bottom .tooltip-arrow::before,
+        .tooltip.bs-tooltip-auto[data-popper-placement^=bottom] .tooltip-arrow::before {
+            border-bottom-color: #1e293b !important;
+        }
+    </style>
+
+    <div class="premium-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fa-solid fa-list me-2"></i> LESSONS LEARNT RECORDS</h4>
+        </div>
+        <div class="card-body">
+            <div class="">
+                <table id="lessonsTable" class="table table-sm table-striped premium-datatable nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="dtr-control">Actions</th>
+                            <th>#</th>
+                            <th>Lesson Category</th>
+                            <th>Project</th>
+                            <th>Client</th>
+                            <th>Background Context</th>
+                            <th>Lesson Learnt</th>
+                            <!-- <th>Category Type</th> -->
+                            <th>Sub Category</th>
+                            <th>Recommendations</th>
+                            <th>Priority Level</th>
+                            <th>Primary Business Impact</th>
+                            <th>Expertise</th>
+                            <th>Attachments</th>
+                            <th>Lesson Learned Date</th>
+                            <th>Status</th>
+                            <th>Created On</th>
+                            <th>Created By</th>
+                            <th>Updated On</th>
+                            <th>Updated By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated via AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attachments Modal -->
+    <div class="modal fade" id="attachmentsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content premium-card">
+                <div class="modal-header">
+                    <h6 class="modal-title"><i class="fa-solid fa-paperclip me-2"></i> Attachments</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="attachmentsList" class="p-2 d-flex flex-wrap gap-2">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- File Preview Modal -->
+    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius:8px; border:none; box-shadow:0 8px 32px rgba(0,80,143,0.18);">
+                <div class="modal-header py-2 px-3" style="background:var(--header-blue); border-radius:8px 8px 0 0;">
+                    <h6 class="modal-title text-white fw-bold text-uppercase mb-0" id="filePreviewModalLabel" style="font-size:12px; letter-spacing:0.5px;">
+                        <i class="fa-solid fa-eye me-2"></i><span id="modalPreviewFileName">Document Preview</span>
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" id="previewModalBody" style="min-height:480px; background:#f4f6f9;">
+                    <!-- Content injected by JS -->
+                </div>
+                <div class="modal-footer py-2 px-3" style="background:#f7fafd; border-top:1px solid #e0e7ef;">
+                    <a id="modalDownloadBtn" href="#" download class="btn btn-sm btn-success fw-bold" style="font-size:11px;">
+                        <i class="fa-solid fa-download me-1"></i> Download
+                    </a>
+                    <button type="button" class="btn btn-sm btn-secondary fw-bold" data-bs-dismiss="modal" style="font-size:11px;">
+                        <i class="fa-solid fa-xmark me-1"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let masterData = {};
+
+    function createTruncatedCell(text, maxLength = 40) {
+        if (!text || text === '-') return '-';
+        if (text.length > maxLength) {
+            let truncatedText = text.substring(0, maxLength);
+            let titleText = text.replace(/"/g, '&quot;');
+            return `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${titleText}">
+                <span class="short-text">${truncatedText}</span><span class="d-none full-text">${text}</span>
+                <a href="javascript:void(0);" class="show-more-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 2px;">... Show More</a>
+            </div>`;
+        }
+        return `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${text.replace(/"/g, '&quot;')}">${text}</div>`;
+    }
+
+    $(document).ready(function() {
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
+
+        // Initialize DataTable
+        // var table = $('#lessonsTable').DataTable({
+        //     "pageLength": 10,
+        //     "ordering": true,
+        //     "responsive": {
+        //         details: {
+        //             type: 'column', 
+        //             target: 0       
+        //         }
+        //     },
+        //     "language": {
+        //         "search": "_INPUT_",
+        //         "searchPlaceholder": "Search records..."
+        //     },
+        //     // "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        //     "order": [[1, "desc"]],
+        //     "columnDefs": [
+        //         { "orderable": false, "targets": 0, "className": "actions-col dtr-control" } // Disable sorting on Actions column
+        //     ]
+        // });
+        var table = $('#lessonsTable').DataTable({
+            pageLength: 10,
+            ordering: true,
+            scrollX: true,          // Add this
+            autoWidth: false,
+            responsive: false,      // Disable responsive when using scrollX
+            order: [[1, "desc"]],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records..."
+            },
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: 0,
+                    className: "actions-col"
+                }
+            ]
+        });
+
+        // Load Master Data
+        $.ajax({
+            url: '/GetMasterData',
+            type: 'GET',
+            success: function(response) {
+                masterData = response;
+                
+                // Populate Client dropdown
+                let clientSelect = $('#searchClient');
+                response.clients.forEach(function(c) {
+                    clientSelect.append(new Option(c.Name, c.Id));
+                });
+                
+                // Populate Project dropdown
+                let projectSelect = $('#searchProject');
+                response.projects.forEach(function(p) {
+                    projectSelect.append(new Option(p.ProjectCode + ' - ' + p.Name, p.Id));
+                });
+                
+                // Populate Category dropdown
+                let categorySelect = $('#searchCategory');
+                response.categories.forEach(function(c) {
+                    categorySelect.append(new Option(c.CategoryType + ' - ' + c.Category, c.Id));
+                });
+
+                // Populate Sub Category dropdown (Default is "All", do not bind all data initially)
+                
+                // Perform initial search
+                performSearch();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error loading master data:", error);
+            }
+        });
+
+        // Sub Category binding based on Category selection
+        $('#searchCategory').on('change', function() {
+            $('#global-loader').css('display', 'flex');
+            let catId = $(this).val();
+            let subCatSelect = $('#searchSubCategory');
+            setTimeout(function() {
+                subCatSelect.empty().append(new Option('All', ''));
+                if (catId) {
+                    masterData.subcategories.filter(sc => sc.CategoryId == catId).forEach(function(sc) {
+                        subCatSelect.append(new Option(sc.SubCategory, sc.Id));
+                    });
+                }
+                setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+            }, 10);
+        });
+        
+        var FILE_ICONS = {
+            'pdf':  { icon: '<i class="fa-solid fa-file-pdf" style="color:#e74c3c;"></i>' },
+            'docx': { icon: '<i class="fa-solid fa-file-word" style="color:#2980b9;"></i>' },
+            'doc':  { icon: '<i class="fa-solid fa-file-word" style="color:#2980b9;"></i>' },
+            'xlsx': { icon: '<i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>' },
+            'xls':  { icon: '<i class="fa-solid fa-file-excel" style="color:#27ae60;"></i>' },
+            'png':  { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>' },
+            'jpg':  { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>' },
+            'jpeg': { icon: '<i class="fa-solid fa-file-image" style="color:#8e44ad;"></i>' },
+        };
+
+        // Attachments Modal View
+        $('#lessonsTable').on('click', '.btn-view-attachments', function() {
+            let attachments = $(this).data('attachments');
+            let listHtml = '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
+            attachments.forEach(function(att) {
+                let filename = att.Path.split('/').pop();
+                let ext = filename.split('.').pop().toLowerCase();
+                let iconInfo = FILE_ICONS[ext] || { icon: '<i class="fa-solid fa-file" style="color:#7f8c8d;"></i>' };
+                let objUrl = '/static/' + att.Path;
+                
+                let isPreviewable = ['pdf','png','jpg','jpeg'].includes(ext);
+                let previewBtnHtml = isPreviewable ? 
+                    `<button type="button" class="btn-preview-file" data-url="${objUrl}" data-filename="${filename}" data-ext="${ext}" title="Preview" style="color:#00508f; padding:0; border:none; background:transparent; line-height:1; display:flex; align-items:center; text-decoration:none;">
+                        <i class="fa-solid fa-eye"></i> 
+                    </button>` : '';
+
+                listHtml += `
+                    <div class="file-preview-card d-flex flex-column" style="border:1px solid #d0dae6; border-radius:6px; background:#fff; padding:6px 8px; width:140px; flex-shrink:0;">
+                        <div class="d-flex align-items-start mb-2" style="gap:6px;">
+                            <span style="font-size:18px; line-height:1;">${iconInfo.icon}</span>
+                            <div style="font-size:10px; font-weight:600; color:#1a3c5e; line-height:1.2; word-wrap:break-word; word-break:break-word; max-height:36px; overflow:hidden;" title="${filename}">
+                                ${filename}
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mt-auto">
+                            <span style="font-size:9px; color:#888;">Stored</span>
+                            <div class="d-flex" style="gap:8px;">
+                                ${previewBtnHtml}
+                                <a href="${objUrl}" download="${filename}" title="Download" style="color:#18794e; padding:0; border:none; background:transparent; line-height:1; display:flex; align-items:center; text-decoration:none;">
+                                    <i class="fa-solid fa-download"></i>
+                                </a>
+                                <button type="button" class="btn-delete-attachment" data-id="${att.Id}" title="Delete" style="color:#c0392b; padding:0; border:none; background:transparent; line-height:1; display:flex; align-items:center;">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            listHtml += '</div>';
+            $('#attachmentsList').html(listHtml);
+            var myModal = new bootstrap.Modal(document.getElementById('attachmentsModal'));
+            myModal.show();
+        });
+        
+        $(document).on('click', '.btn-preview-file', function(e) {
+            e.preventDefault();
+            var objUrl = $(this).data('url');
+            var filename = $(this).data('filename');
+            var ext = $(this).data('ext');
+            var body = document.getElementById('previewModalBody');
+
+            document.getElementById('modalPreviewFileName').textContent = filename;
+            document.getElementById('modalDownloadBtn').href = objUrl;
+            document.getElementById('modalDownloadBtn').setAttribute('download', filename);
+
+            if (ext === 'pdf') {
+                body.innerHTML = '<iframe src="' + objUrl + '#toolbar=1" style="width:100%; height:600px; border:none;"></iframe>';
+            } else {
+                body.innerHTML = '<div style="text-align:center; padding:20px;"><img src="' + objUrl + '" style="max-width:100%; max-height:560px; border-radius:6px; box-shadow:0 2px 12px rgba(0,0,0,0.12);"></div>';
+            }
+            
+            // Hide attachments modal before showing preview
+            var attachmentsModalEl = document.getElementById('attachmentsModal');
+            var attachmentsModal = bootstrap.Modal.getInstance(attachmentsModalEl);
+            if (attachmentsModal) {
+                attachmentsModal.hide();
+            }
+            
+            var previewModal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
+            previewModal.show();
+            
+            // Optional: re-open attachments modal when preview modal closes
+            document.getElementById('filePreviewModal').addEventListener('hidden.bs.modal', function () {
+                if (attachmentsModalEl && attachmentsModal) {
+                    attachmentsModal.show();
+                }
+            }, { once: true });
+        });
+
+        // Clear filter selections
+        $('#btnClear').on('click', function() {
+            $('#searchClient').val('').trigger('change');
+            $('#searchProject').val('').trigger('change');
+            $('#searchCategory').val('').trigger('change');
+            $('#searchSubCategory').val('').trigger('change');
+            $('#searchStatus').val('').trigger('change');
+            performSearch();
+        });
+        
+        // Search button click
+        $('.btn-primary').on('click', function() {
+            performSearch();
+        });
+        
+        // Export button click
+        $('#btnExport').on('click', function() {
+            $('#global-loader').css('display', 'flex');
+            let searchParams = {
+                client: $('#searchClient').val(),
+                project: $('#searchProject').val(),
+                category: $('#searchCategory').val(),
+                subCategory: $('#searchSubCategory').val(),
+                status: $('#searchStatus').val()
+            };
+            
+            // $.ajax({
+            //     url: '/ExportLessonsLearnt',
+            //     type: 'POST',
+            //     contentType: 'application/json',
+            //     data: JSON.stringify(searchParams),
+            //     xhrFields: {
+            //         responseType: 'blob'
+            //     },
+            //     success: function(blob, status, xhr) {
+            //         var contentType = xhr.getResponseHeader('content-type');
+            //         if (contentType && contentType.indexOf('application/json') !== -1) {
+            //             var reader = new FileReader();
+            //             reader.onload = function() {
+            //                 var result = JSON.parse(reader.result);
+            //                 if (result.status === 'info' || result.status === 'error') {
+            //                     Swal.fire({
+            //                         icon: result.status === 'info' ? 'info' : 'error',
+            //                         title: result.status === 'info' ? 'Notice' : 'Error',
+            //                         text: result.message,
+            //                         confirmButtonColor: '#00508f'
+            //                     });
+            //                 }
+            //             };
+            //             reader.readAsText(blob);
+            //             return;
+            //         }
+                    
+            //         var filename = "LessonsLearnt_Export.xlsx";
+            //         var disposition = xhr.getResponseHeader('Content-Disposition');
+            //         if (disposition && disposition.indexOf('attachment') !== -1) {
+            //             var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            //             var matches = filenameRegex.exec(disposition);
+            //             if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+            //         }
+            //         var link = document.createElement('a');
+            //         link.href = window.URL.createObjectURL(blob);
+            //         link.download = filename;
+            //         document.body.appendChild(link);
+            //         link.click();
+            //         document.body.removeChild(link);
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error("Export request error:", error);
+            //     }
+            // });
+            function handleBlobResponse(blob, xhr) {
+                const contentType = xhr.getResponseHeader('content-type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function () {
+                        const result = JSON.parse(reader.result);
+
+                        Swal.fire({
+                            icon: result.status || 'error',
+                            title: result.status === 'info' ? 'Notice' : 'Error',
+                            text: result.message,
+                            confirmButtonColor: '#00508f'
+                        });
+                    };
+
+                    reader.readAsText(blob);
+                    return;
+                }
+
+                // Download file
+                let filename = 'LessonsLearnt_Export.xlsx';
+                const disposition = xhr.getResponseHeader('Content-Disposition');
+
+                if (disposition) {
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
+
+                    if (matches && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                    }
+                }
+
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            $.ajax({
+                url: '/ExportLessonsLearnt',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(searchParams),
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(blob, status, xhr) {
+                    setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    console.log('success', blob, status, xhr);
+                    handleBlobResponse(blob, xhr);
+                },
+                error: function(xhr) {
+                    setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    console.log('error', xhr.response);
+                    try {
+        let result;
+
+        if (xhr.responseText) {
+            result = JSON.parse(xhr.responseText);
+        } else {
+            result = {
+                status: 'error',
+                message: error || 'Export failed'
+            };
+        }
+
+        Swal.fire({
+            icon: result.status || 'error',
+            title: 'Error',
+            text: result.message,
+            confirmButtonColor: '#00508f'
+        });
+
+    } catch (e) {
+        Swal.fire({
+            icon: 'info',
+            title: 'info',
+            text: 'No data found for the selected criteria.',
+            confirmButtonColor: '#00508f'
+        });
+    }
+                }
+            });
+        });
+        
+        // Delete lesson record
+        $('#lessonsTable').on('click', '.btn-delete-lesson', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#global-loader').css('display', 'flex');
+                    $.ajax({
+                        url: '/DeleteLessonLearn',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ id: id }),
+                        success: function(response) {
+                            setTimeout(() => {
+                                $('#global-loader').css('display', 'none');
+                                if (response.status === 'success') {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'Lesson learnt record has been deleted.',
+                                        'success'
+                                    );
+                                    performSearch();
+                                } else {
+                                    Swal.fire('Error!', response.message, 'error');
+                                }
+                            }, 500);
+                        },
+                        error: function(xhr, status, error) {
+                            setTimeout(() => {
+                                $('#global-loader').css('display', 'none');
+                                Swal.fire('Error!', 'Failed to delete record.', 'error');
+                            }, 500);
+                        }
+                    });
+                }
+            });
+        });
+        
+        function performSearch() {
+            $('#global-loader').css('display', 'flex');
+            let searchParams = {
+                client: $('#searchClient').val(),
+                project: $('#searchProject').val(),
+                category: $('#searchCategory').val(),
+                subCategory: $('#searchSubCategory').val(),
+                status: $('#searchStatus').val()
+            };
+            
+            $.ajax({
+                url: '/SearchLessonLearn',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(searchParams),
+                success: function(response) {
+                    setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    if (response.status === 'success') {
+                        table.clear();
+                        
+                        response.data.forEach(function(row) {
+                            let statusBadge = '';
+                            if (row.Status === 'Pending Approval') {
+                                statusBadge = '<span class="badge badge-premium bg-status-pending">Pending Approval</span>';
+                            } else if (row.Status === 'Completed') {
+                                statusBadge = '<span class="badge badge-premium bg-status-completed">Completed</span>';
+                            } else {
+                                statusBadge = '<span class="badge badge-premium bg-status-rejected">' + row.Status + '</span>';
+                            }
+                            
+                            let attachmentsHtml = '';
+                            if (row.Attachments && row.Attachments.length > 0) {
+                                attachmentsHtml = `<button class="btn btn-attachment-icon btn-view-attachments" data-attachments='${JSON.stringify(row.Attachments)}'><i class="fa-solid fa-paperclip" style="font-size: 14px;"></i> <span class="badge">${row.Attachments.length}</span></button>`;
+                            } else {
+                                attachmentsHtml = '<span style="color: #adb5bd;">-</span>';
+                            }
+                            
+                            let catSubCatHtml = '';
+                            if (Array.isArray(row.CategorySubCategory) && row.CategorySubCategory.length > 0) {
+                                let subCatItems = row.CategorySubCategory.map(function(item) {
+                                    return item.Category + (item.SubCategory ? `: ${item.SubCategory}` : '');
+                                });
+                                let fullText = subCatItems.join(', ');
+                                let maxLength = 40;
+                                if (fullText.length > maxLength) {
+                                    let truncatedText = fullText.substring(0, maxLength);
+                                    catSubCatHtml = `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${fullText}">
+                                        <span class="short-text">${truncatedText}</span><span class="d-none full-text">${fullText}</span>
+                                        <a href="javascript:void(0);" class="show-more-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 2px;">... Show More</a>
+                                    </div>`;
+                                } else {
+                                    catSubCatHtml = `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${fullText}">${fullText}</div>`;
+                                }
+                            } else {
+                                catSubCatHtml = '-';
+                            }
+                            
+                            let actions = `
+                                <a href="#" class="btn-action-icon edit me-1" title="Edit" style="display:none;"><i class="fa-solid fa-edit"></i></a>
+                                <a href="#" class="btn-action-icon delete btn-delete-lesson" data-id="${row.Id}" title="Delete"><i class="fa-solid fa-trash"></i></a>
+                            `;
+                            
+                            let bgHtml = createTruncatedCell(row.Background);
+                            let llHtml = createTruncatedCell(row.LessonLearnt);
+                            let recHtml = createTruncatedCell(row.Recommendations);
+                            let expHtml = createTruncatedCell(row.Expertise);
+
+                            table.row.add([
+                                actions,
+                                row.Id,
+                                row.LessonCategory,
+                                row.Project,
+                                row.Client,
+                                bgHtml,
+                                llHtml,
+                                // row.CategoryType,
+                                catSubCatHtml,
+                                recHtml,
+                                row.PriorityLevel,
+                                row.PrimaryBusinessImpact,
+                                expHtml,
+                                attachmentsHtml,
+                                row.LessonLearnedDate,
+                                statusBadge,
+                                row.CreatedOn,
+                                row.CreatedBy,
+                                row.UpdatedOn,
+                                row.UpdatedBy
+                            ]);
+                        });
+                        
+                        table.draw();
+
+                        // Initialize Bootstrap 5 Tooltips
+                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                        tooltipTriggerList.map(function (tooltipTriggerEl) {
+                            return new bootstrap.Tooltip(tooltipTriggerEl);
+                        });
+                    } else if (response.status === 'info') {
+                        table.clear().draw();
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'No Data Found',
+                            text: response.message,
+                            confirmButtonColor: '#00508f'
+                        });
+                    } else {
+                        console.error("Search error:", response.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                            confirmButtonColor: '#00508f'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    console.error("Search request error:", error);
+                }
+            });
+        }
+
+        // Handle Show More / Show Less for Sub Category
+        $('#lessonsTable').on('click', '.show-more-link', function(e) {
+            e.preventDefault();
+            let container = $(this).closest('.subcategory-cell');
+            container.find('.short-text').addClass('d-none');
+            container.find('.full-text').removeClass('d-none');
+            $(this).addClass('d-none');
+            container.append('<a href="javascript:void(0);" class="show-less-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 4px;"> Show Less</a>');
+            
+            // Hide tooltip when expanding to prevent it from getting stuck
+            let tooltip = bootstrap.Tooltip.getInstance(container[0]);
+            if (tooltip) { tooltip.hide(); }
+        });
+        
+        $('#lessonsTable').on('click', '.show-less-link', function(e) {
+            e.preventDefault();
+            let container = $(this).closest('.subcategory-cell');
+            container.find('.full-text').addClass('d-none');
+            container.find('.short-text').removeClass('d-none');
+            container.find('.show-more-link').removeClass('d-none');
+            $(this).remove();
+        });
+    });
+</script>
+{% endblock %}

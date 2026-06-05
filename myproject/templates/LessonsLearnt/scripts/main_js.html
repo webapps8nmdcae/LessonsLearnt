@@ -1,0 +1,103 @@
+<script>
+$(document).ready(function() {
+
+    // 1. Initialize Select2 with Bootstrap 5 Theme styling
+    $('.select2-init').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
+
+    // 2. Initialize DataTables
+    $('#premiumTable').DataTable({
+        pageLength: 10,
+        responsive: true,
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search records..."
+        }
+    });
+
+    // 3. Custom Loader Logic
+    $('#showLoaderBtn').on('click', function() {
+        $('#global-loader').css('display', 'flex');
+        
+        // Hide loader after 3 seconds to simulate an API call
+        setTimeout(function() {
+            $('#global-loader').fadeOut();
+        }, 3000);
+    });
+
+    // 4. SweetAlert2 Logic
+    $('#swalSuccess').on('click', function() {
+        Swal.fire({
+            title: 'Success!',
+            text: 'Action completed successfully.',
+            icon: 'success',
+            confirmButtonColor: '#00508f' // using the corporate blue
+        });
+    });
+
+    $('#swalInfo').on('click', function() {
+        Swal.fire({
+            title: 'Information',
+            text: 'Here is some useful information.',
+            icon: 'info',
+            confirmButtonColor: '#00508f'
+        });
+    });
+
+    $('#swalWarning').on('click', function() {
+        Swal.fire({
+            title: 'Warning!',
+            text: 'Please review your inputs.',
+            icon: 'warning',
+            confirmButtonColor: '#f39c12'
+        });
+    });
+
+    $('#swalError').on('click', function() {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong processing your request.',
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    });
+
+    $('#swalConfirm').on('click', function() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#00508f',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Confirmed!',
+                    text: 'Your action has been processed.',
+                    icon: 'success',
+                    confirmButtonColor: '#00508f'
+                });
+            }
+        });
+    });
+    
+    // Wire up the mock buttons to show sweetalerts and loaders
+    $('#btnSave').click(function(){ $('#swalSuccess').click(); });
+    $('#btnUpdate').click(function(){ $('#swalInfo').click(); });
+    $('#btnDelete').click(function(){ $('#swalConfirm').click(); });
+    $('#btnDownload').click(function(){ $('#showLoaderBtn').click(); });
+
+    // Accordion Expand/Collapse All
+    $('#btnExpandAll').on('click', function() {
+        $('#myAccordion .accordion-collapse').collapse('show');
+    });
+    $('#btnCollapseAll').on('click', function() {
+        $('#myAccordion .accordion-collapse').collapse('hide');
+    });
+
+});
+</script>
