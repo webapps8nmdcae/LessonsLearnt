@@ -109,7 +109,7 @@ def SaveLessonLearn():
             IsProject=bool(is_project),
             proj_ProjectEmployerClassificationId=client_id if client_id else None,
             IsArchived=0,
-            CreatedBy='2c77eb1b-28b6-44a1-be1e-5fa41beb80aa',
+            CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
             CreatedOn=now
         )
         db.session.add(new_form)
@@ -122,7 +122,7 @@ def SaveLessonLearn():
                 qhse_LLCategoryTypeId=item.get('categoryTypeId'),
                 qhse_LLCategoryId=item.get('categoryId'),
                 qhse_LLSubCategoryId=item.get('subCategoryId'),
-                CreatedBy='2c77eb1b-28b6-44a1-be1e-5fa41beb80aa',
+                CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
                 CreatedOn=now
             )
             db.session.add(new_cat)
@@ -131,7 +131,7 @@ def SaveLessonLearn():
             new_exp = LessonLearnFormExpertise(
                 ExpertiseId=exp_id,
                 qhse_LessonLearnFormId=form_id,
-                CreatedBy='2c77eb1b-28b6-44a1-be1e-5fa41beb80aa',
+                CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
                 CreatedOn=now
             )
             db.session.add(new_exp)
@@ -168,7 +168,7 @@ def SaveLessonLearn():
             hr_EmployeeId=5864,
             Comments=recommendations,
             qshe_LLApprovalStatusId=0,
-            CreatedBy='2c77eb1b-28b6-44a1-be1e-5fa41beb80aa',
+            CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
             CreatedOn=now,
             qhse_LessonLearnPriorityLevelId = priority_id,
             qhse_LessonLearnPrimaryBusinessImpactId = impact_area_id

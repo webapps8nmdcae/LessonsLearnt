@@ -83,10 +83,11 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             border-bottom: none !important;
-            padding: 8px 10px !important;
+            padding: 8px 24px 8px 10px !important; /* Add space for sort icon */
             border-top: none;
             border-right: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center !important;
+            text-align: left !important;
+            box-sizing: border-box;
         }
         .premium-datatable thead th:last-child {
             border-right: none;
@@ -94,10 +95,11 @@
         .premium-datatable tbody td {
             border-bottom: 1px solid #eaedf1;
             border-right: 1px solid #f4f6f9;
-            padding: 6px 10px !important;
+            padding: 6px 10px;
             color: #333;
             vertical-align: middle;
             font-size: 12px;
+            box-sizing: border-box;
         }
         
         /* Fix for DataTables scrollX hidden header */
@@ -111,6 +113,10 @@
         .dataTables_scrollHeadInner .premium-datatable {
             margin-top: 0 !important;
             margin-bottom: 0 !important;
+        }
+        
+        .dataTables_scrollHeadInner, .dataTables_scrollHeadInner table {
+            width: 100% !important;
         }
 
         #lessonsTable_filter {
@@ -378,9 +384,9 @@
         var table = $('#lessonsTable').DataTable({
             pageLength: 10,
             ordering: true,
-            scrollX: true,          // Add this
-            autoWidth: false,
-            responsive: false,      // Disable responsive when using scrollX
+            scrollX: true,
+            autoWidth: true,
+            responsive: false,
             order: [[1, "desc"]],
             language: {
                 search: "_INPUT_",
@@ -393,6 +399,11 @@
                     className: "actions-col"
                 }
             ]
+        });
+
+        // Adjust columns on window resize to fix alignment issues with scrollX
+        $(window).on('resize', function () {
+            table.columns.adjust();
         });
 
         // Load Master Data
@@ -835,7 +846,7 @@
                             ]);
                         });
                         
-                        table.draw();
+                        table.columns.adjust().draw();
 
                         // Initialize Bootstrap 5 Tooltips
                         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
