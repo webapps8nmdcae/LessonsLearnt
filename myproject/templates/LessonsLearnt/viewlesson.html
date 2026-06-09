@@ -86,7 +86,7 @@
             padding: 8px 24px 8px 10px !important; /* Add space for sort icon */
             border-top: none;
             border-right: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: left !important;
+            text-align: center !important;
             box-sizing: border-box;
         }
         .premium-datatable thead th:last-child {
@@ -114,10 +114,12 @@
             margin-top: 0 !important;
             margin-bottom: 0 !important;
         }
-        
-        .dataTables_scrollHeadInner, .dataTables_scrollHeadInner table {
+
+        .dataTables_scrollHeadInner, 
+        .dataTables_scrollHeadInner table {
             width: 100% !important;
         }
+        
 
         #lessonsTable_filter {
             padding-top: 0px;
@@ -261,13 +263,13 @@
         </div>
         <div class="card-body">
             <div class="">
-                <table id="lessonsTable" class="table table-sm premium-datatable">
+                <table id="lessonsTable" class="table table-sm premium-datatable" style="table-layout:fixed">
                     <thead>
                         <tr>
-                            <th class="dtr-control">Actions</th>
+                            <th class="dtr-control" style="width: 60px; min-width: 60px; max-width: 60px;"><i class="fa-solid fa-bars"></i></th>
                             <th>#</th>
-                            <th>Lesson Category</th>
-                            <th>Project</th>
+                            <th>Category</th>
+                            <th style="width: 200px; min-width: 200px; max-width: 200px;">Project</th>
                             <th>Client</th>
                             <th>Background Context</th>
                             <th>Lesson Learnt</th>
@@ -277,13 +279,13 @@
                             <th>Priority Level</th>
                             <th>Primary Business Impact</th>
                             <th>Expertise</th> -->
-                            <th>Attachments</th>
+                            <th style="width: 80px; min-width: 80px; max-width: 80px;"><i class="fa-solid fa-download"></i></th>
                             <th>Date</th>
                             <th>Status</th>
                             <th>Created On</th>
                             <th>Created By</th>
-                            <th>Updated On</th>
-                            <th>Updated By</th>
+                            <!-- <th>Updated On</th>
+                            <th>Updated By</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -384,9 +386,10 @@
         var table = $('#lessonsTable').DataTable({
             pageLength: 10,
             ordering: true,
-            // scrollX: true,
-            // autoWidth: true,
+            scrollX: true,
+            autoWidth: false,
             responsive: false,
+            scrollCollapse: true,
             order: [[1, "desc"]],
             language: {
                 search: "_INPUT_",
@@ -396,9 +399,32 @@
                 {
                     orderable: false,
                     targets: 0,
-                    className: "actions-col"
+                    className: "actions-col",
+                    width: "60px"
+                },
+                {
+                    targets: 3,
+                    width: "200px"
+                },
+                {
+                    targets: 8,
+                    width: "60px"
                 }
             ]
+        });
+        // Source - https://stackoverflow.com/a/18292263
+        // Posted by Sharjeel Ahmed, modified by community. See post 'Timeline' for change history
+        // Retrieved 2026-06-09, License - CC BY-SA 3.0
+
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+
+        // Source - https://stackoverflow.com/a/46160726
+        // Posted by Gyrocode.com, modified by community. See post 'Timeline' for change history
+        // Retrieved 2026-06-09, License - CC BY-SA 3.0
+
+        $('#myCollapsible').on('shown.bs.collapse', function () {
+           $($.fn.dataTable.tables(true)).DataTable()
+              .columns.adjust();
         });
 
         // Adjust columns on window resize to fix alignment issues with scrollX
@@ -857,12 +883,15 @@
                                 statusBadge,
                                 row.CreatedOn,
                                 row.CreatedBy,
-                                row.UpdatedOn,
-                                row.UpdatedBy
+                                // row.UpdatedOn,
+                                // row.UpdatedBy
                             ]);
                         });
                         
-                        table.columns.adjust().draw();
+                        table.draw();
+                        setTimeout(function() {
+                            table.columns.adjust();
+                        }, 50);
 
                         // Initialize Bootstrap 5 Tooltips
                         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
