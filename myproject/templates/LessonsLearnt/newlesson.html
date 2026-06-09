@@ -227,18 +227,18 @@
                                     <div class="row">
                                         <div class="col-md-3 border-end">
                                             <label class="form-label text-muted text-uppercase mb-2">Category</label>
-                                            <div class="list-group" id="categoryListGroup" role="tablist">
+                                            <div class="list-group p-2" id="categoryListGroup" role="tablist" style="max-height: 65%; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
                                             </div>
                                         </div>
                                         <div class="col-md-3 border-end">
                                             <label class="form-label text-muted text-uppercase mb-1">Sub Category</label>
-                                            <div id="subCategoryCheckboxList" class="p-2" style="max-height: 160px; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
+                                            <div id="subCategoryCheckboxList" class="p-2" style="max-height: 65%; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
                                                 <div class="text-muted p-2" style="text-transform: uppercase;">Select a category to view sub category.</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-muted text-uppercase mb-1">Selected Sub Category <span class="text-danger">*</span></label>
-                                            <div id="selectedSubCategoriesContainer" class="p-2 border rounded" style="max-height: 160px; overflow-y: auto; background: #fff;">
+                                            <div id="selectedSubCategoriesContainer" class="p-2 border rounded" style="max-height: 65%; overflow-y: auto; background: #fff;">
                                                 <div class="text-muted text-center" style="text-transform: uppercase;">No data selected</div>
                                             </div>
                                             <input type="hidden" id="selectedSubCategoryIds" name="subCategory" required>
@@ -250,9 +250,10 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <!-- Section 3: Business Perspective & Attachments -->
-                <div class="mb-2 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff; ">
+                <div class="mb-2 section-wrapper shadow-sm" style="border: 1px solid #ccd0d5; border-radius: 4px; overflow: hidden; background-color: #ffffff; display:none;">
                     <div class="d-flex justify-content-between align-items-center collapse-header" data-bs-toggle="collapse" data-bs-target="#collapseImpact" aria-expanded="true" aria-controls="collapseImpact" style="cursor: pointer; background-color: var(--header-blue); color: #ffffff; padding: 10px 15px;">
                         <h6 class="mb-0 text-uppercase fw-bold text-white" style="font-size: 12px; letter-spacing: 0.5px;"><i class="fa-solid fa-chart-line me-2 text-white"></i>Business Impact</h6>
                         <i class="fa-solid fa-chevron-down text-white" style="font-size: 12px;"></i>

@@ -408,8 +408,7 @@ def ExportLessonsLearnt():
         
         headers = [
             'ID', 'Lesson Category', 'Project', 'Client', 'Background Context', 'Lesson Learnt', 
-            'Category Type', 'Category - Sub Category', 'Recommendations/Actions', 'Priority Level', 
-            'Primary Business Impact', 'Expertise', 'Status', 'Created On', 'Created By', 'Updated On', 'Updated By', 'Lesson Learned Date'
+            'Category Type', 'Category - Sub Category', 'Status', 'Created On', 'Created By', 'Updated On', 'Updated By', 'Date'
         ]
         ws.append(headers)
         
@@ -461,10 +460,6 @@ def ExportLessonsLearnt():
             elif form.ActionStatus == 2:
                 status_text = 'Rejected'
                 
-            form_expertise_records = db.session.query(LessonLearnFormExpertise).filter(LessonLearnFormExpertise.qhse_LessonLearnFormId == form.Id).all()
-            expertise_names = [user_dict.get(str(exp.ExpertiseId), str(exp.ExpertiseId)) for exp in form_expertise_records if exp.ExpertiseId]
-            expertise_text = ", ".join([n for n in expertise_names if n]) if expertise_names else '-'
-
             row_data = [
                 form.Id,
                 'Project' if form.IsProject else 'Department',
@@ -474,10 +469,6 @@ def ExportLessonsLearnt():
                 form.LessonLearnt,
                 category_types,
                 category_subcategories,
-                row.Comments if row.Comments else '-',
-                row.PriorityLevel if row.PriorityLevel else '-',
-                row.PrimaryBusinessImpact if row.PrimaryBusinessImpact else '-',
-                expertise_text,
                 status_text,
                 form.CreatedOn if form.CreatedOn else None,
                 user_dict.get(str(form.CreatedBy), form.CreatedBy) if form.CreatedBy else '-',
@@ -486,7 +477,7 @@ def ExportLessonsLearnt():
                 form.Date if form.Date else None
             ]
             
-            date_columns = [14, 16, 18]  # Created On, Updated On, Lesson Learned Date
+            date_columns = [10, 12, 14]  # Created On, Updated On, Lesson Learned Date
             for col_idx, value in enumerate(row_data, 1):
                 cell = ws.cell(row=row_idx, column=col_idx, value=value)
                 cell.border = thin_border

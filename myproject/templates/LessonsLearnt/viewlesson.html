@@ -14,7 +14,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Project</label>
                     <select class="form-select select2" id="searchProject">
                         <option value="">All</option>
@@ -26,19 +26,19 @@
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Category</label>
                     <select class="form-select select2" id="searchCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Sub Category</label>
                     <select class="form-select select2" id="searchSubCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Status</label>
                     <select class="form-select select2" id="searchStatus">
                         <option value="">All</option>
@@ -259,9 +259,9 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0"><i class="fa-solid fa-list me-2"></i> LESSONS LEARNT RECORDS</h4>
         </div>
-        <div class="card-body" style="overflow: auto;">
+        <div class="card-body">
             <div class="">
-                <table id="lessonsTable" class="table table-sm premium-datatable" width="100%">
+                <table id="lessonsTable" class="table table-sm premium-datatable">
                     <thead>
                         <tr>
                             <th class="dtr-control">Actions</th>
@@ -273,12 +273,12 @@
                             <th>Lesson Learnt</th>
                             <!-- <th>Category Type</th> -->
                             <th>Sub Category</th>
-                            <th>Recommendations</th>
+                            <!-- <th>Recommendations</th>
                             <th>Priority Level</th>
                             <th>Primary Business Impact</th>
-                            <th>Expertise</th>
+                            <th>Expertise</th> -->
                             <th>Attachments</th>
-                            <th>Lesson Learned Date</th>
+                            <th>Date</th>
                             <th>Status</th>
                             <th>Created On</th>
                             <th>Created By</th>
@@ -386,7 +386,7 @@
             ordering: true,
             // scrollX: true,
             // autoWidth: true,
-            // responsive: false,
+            responsive: false,
             order: [[1, "desc"]],
             language: {
                 search: "_INPUT_",
@@ -431,7 +431,11 @@
                     categorySelect.append(new Option(c.CategoryType + ' - ' + c.Category, c.Id));
                 });
 
-                // Populate Sub Category dropdown (Default is "All", do not bind all data initially)
+                // Populate Sub Category dropdown
+                let subCatSelect = $('#searchSubCategory');
+                response.subcategories.forEach(function(sc) {
+                    subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
+                });
                 
                 // Perform initial search
                 performSearch();
@@ -450,11 +454,21 @@
                 subCatSelect.empty().append(new Option('All', ''));
                 if (catId) {
                     masterData.subcategories.filter(sc => sc.CategoryId == catId).forEach(function(sc) {
-                        subCatSelect.append(new Option(sc.SubCategory, sc.Id));
+                        subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
+                    });
+                } else {
+                    masterData.subcategories.forEach(function(sc) {
+                        subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
                     });
                 }
+                performSearch();
                 setTimeout(() => $('#global-loader').css('display', 'none'), 500);
             }, 10);
+        });
+
+        // Trigger search on other dropdown changes
+        $('#searchProject, #searchClient, #searchSubCategory, #searchStatus').on('change', function() {
+            performSearch();
         });
         
         var FILE_ICONS = {
@@ -771,7 +785,9 @@
                 contentType: 'application/json',
                 data: JSON.stringify(searchParams),
                 success: function(response) {
-                    setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    console.log('response in performSearch = ',response)
+                    // setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+                    $('#global-loader').css('display', 'none');
                     if (response.status === 'success') {
                         table.clear();
                         
@@ -832,10 +848,10 @@
                                 llHtml,
                                 // row.CategoryType,
                                 catSubCatHtml,
-                                recHtml,
-                                row.PriorityLevel,
-                                row.PrimaryBusinessImpact,
-                                expHtml,
+                                // recHtml,
+                                // row.PriorityLevel,
+                                // row.PrimaryBusinessImpact,
+                                // expHtml,
                                 attachmentsHtml,
                                 row.LessonLearnedDate,
                                 statusBadge,
@@ -854,6 +870,7 @@
                             return new bootstrap.Tooltip(tooltipTriggerEl);
                         });
                     } else if (response.status === 'info') {
+                        console.log('response.message in info = ',response.message)
                         table.clear().draw();
                         Swal.fire({
                             icon: 'info',
