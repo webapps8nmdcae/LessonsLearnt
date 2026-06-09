@@ -160,13 +160,17 @@
             font-size: 10px;
             font-weight: 600;
             padding: 4px 8px;
-            border-radius: 3px;
+            border-radius: 10px;
             letter-spacing: 0.3px;
             text-transform: uppercase;
+            white-space: normal;
+            word-wrap: break-word;
+            display: inline-block;
+            text-align: center;
         }
-        .bg-status-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .bg-status-completed { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .bg-status-rejected { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .bg-status-pending { background-color: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .bg-status-completed { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .bg-status-rejected { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
 
         /* Category Premium Badge */
         .premium-badge {
@@ -266,26 +270,19 @@
                 <table id="lessonsTable" class="table table-sm premium-datatable" style="table-layout:fixed">
                     <thead>
                         <tr>
-                            <th class="dtr-control" style="width: 60px; min-width: 60px; max-width: 60px;"><i class="fa-solid fa-bars"></i></th>
-                            <th>#</th>
-                            <th>Category</th>
-                            <th style="width: 200px; min-width: 200px; max-width: 200px;">Project</th>
-                            <th>Client</th>
-                            <th>Background Context</th>
-                            <th>Lesson Learnt</th>
-                            <!-- <th>Category Type</th> -->
-                            <th>Sub Category</th>
-                            <!-- <th>Recommendations</th>
-                            <th>Priority Level</th>
-                            <th>Primary Business Impact</th>
-                            <th>Expertise</th> -->
-                            <th style="width: 80px; min-width: 80px; max-width: 80px;"><i class="fa-solid fa-download"></i></th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Created On</th>
-                            <th>Created By</th>
-                            <!-- <th>Updated On</th>
-                            <th>Updated By</th> -->
+                            <th class="dtr-control" style="width: 3%;"><i class="fa-solid fa-bars"></i></th>
+                            <th style="width: 3%;">#</th>
+                            <th style="width: 5%;">Category</th>
+                            <th style="width: 8%;">Project</th>
+                            <th style="width: 6%;">Client</th>
+                            <th style="width: 12%;">Background Context</th>
+                            <th style="width: 12%;">Lesson Learnt</th>
+                            <th style="width: 12%;">Sub Category</th>
+                            <th style="width: 5%;"><i class="fa-solid fa-download"></i></th>
+                            <th style="width: 6%;">Date</th>
+                            <th style="width: 6%;">Status</th>
+                            <th style="width: 6%;">Created On</th>
+                            <th style="width: 8%;">Created By</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -396,20 +393,19 @@
                 searchPlaceholder: "Search records..."
             },
             columnDefs: [
-                {
-                    orderable: false,
-                    targets: 0,
-                    className: "actions-col",
-                    width: "60px"
-                },
-                {
-                    targets: 3,
-                    width: "200px"
-                },
-                {
-                    targets: 8,
-                    width: "60px"
-                }
+                { orderable: false, targets: 0, className: "actions-col", width: "3%" },
+                { targets: 1, width: "3%" },
+                { targets: 2, width: "5%" },
+                { targets: 3, width: "8%" },
+                { targets: 4, width: "6%" },
+                { targets: 5, width: "12%" },
+                { targets: 6, width: "12%" },
+                { targets: 7, width: "12%" },
+                { targets: 8, width: "5%" },
+                { targets: 9, width: "6%" },
+                { targets: 10, width: "6%" },
+                { targets: 11, width: "6%" },
+                { targets: 12, width: "8%" }
             ]
         });
         // Source - https://stackoverflow.com/a/18292263
