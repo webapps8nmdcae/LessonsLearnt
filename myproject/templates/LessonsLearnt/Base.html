@@ -383,8 +383,11 @@
                 <div class="portal-badge"><i class="fa-solid fa-xs me-1"></i>You are in the Lessons Learnt Portal</div>
                 <div class="user-profile dropdown">
                     <a href="#" class="btn-user dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="user-avatar">PR</div>
-                        Prakash Radhakrishnan
+                        <div class="user-avatar">
+                            {% set fname = session['lessonslearnt_app']['FullName'].split() %}
+                            {{ (fname[0][0] ~ fname[1][0] if fname|length > 1 else (fname[0][:2] if fname else '')) | upper }}
+                        </div>
+                        {{ session['lessonslearnt_app']['FullName'] }}  
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <!-- <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user fa-xs"></i>Profile</a></li>
@@ -400,8 +403,8 @@
         <div class="menu-bar">
             <ul class="nav-menu">
                 <!-- <li class="nav-item"><a href="/home" class="nav-link"><i class="fa-solid fa-house"></i>Home</a></li> -->
-                <li class="nav-item"><a href="/newlesson" class="nav-link"><i class="fa-solid fa-plus-circle"></i>New Lesson</a></li>
-                <li class="nav-item"><a href="/viewlesson" class="nav-link"><i class="fa-solid fa-table-list"></i>View Lessons</a></li>
+                <li class="nav-item"><a href="{{ url_for("LessonsLearnt.newlesson") }}" class="nav-link"><i class="fa-solid fa-plus-circle"></i>New Lesson</a></li>
+                <li class="nav-item"><a href="{{ url_for("LessonsLearnt.viewlesson") }}" class="nav-link"><i class="fa-solid fa-table-list"></i>View Lessons</a></li>
             </ul>
         </div>
     </header>

@@ -33,7 +33,7 @@ class User(db.Model):
     __bind_key__ = 'WebApps'
     __table_args__ = {u'schema': 'dbo'}
     
-    Id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(500), primary_key=False)
     email = db.Column(db.String(500), primary_key=False)
     PasswordHash = db.Column(db.String(500), primary_key=False)
@@ -44,122 +44,27 @@ class User(db.Model):
     EmployeeNumber = db.Column(db.String(500), primary_key=False)
     FunctionName = db.Column(db.String(500), primary_key=False)
     FullName = db.Column(db.String(500), primary_key=False)
-#
-#     # relationships
-#     roles = db.relationship('Role', secondary='AspNetUserRoles')
-#     hrEmployee = db.relationship("Employee", back_populates="userX")
-#     projectUsers = db.relationship('ProjectUser', back_populates="user")
-#
-#     # initializing user
-#     def __init__(self, email, username, passwordInput):
-#         self.username = username
-#         self.email = email
-#         self.PasswordHash = generate_password_hash(passwordInput)
-#         # self.test= test
-#
-#     def check_password(self, passwordInput):
-#         return self.check_password(self.password, passwordInput)
-#
-#     # print
-#     def __repr__(self):
-#         return f"Username is {self.username} user email is {self.email} password is {self.PasswordHash}"
-#
-#     # json
-#     def json(self):
-#         return {'name': self.username}
-#
-#     @property
-#     def serialize(self):
-#         return {
-#             'id': self.id,
-#             'username': self.username,
-#             'email': self.email,
-#             'PasswordHash': self.PasswordHash,
-#             'active': self.active,
-#             'NameFirst': self.NameFirst,
-#             'NameLast': self.NameLast,
-#             'HR_EmployeeId': self.hrEmployee[0].Id,
-#             'EmployeeNumber': self.hrEmployee[0].EmployeeNumber.strip(),
-#             'FunctionName': self.FunctionName,
-#             'FullName': self.FullName,
-#             # 'ProjectIds': '-'.join([str(a.Id) for a in self.projectUsers]),
-#         }
-#
-#
-# class AspNetUserProject(db.Model):
-#     __tablename__ = "AspNetUserProject"
-#     __bind_key__ = 'WebApps'
-#     __table_args__ = {u'schema': 'dbo'}
-#     Id = db.Column(db.Integer, primary_key=True)
-#     AppId = db.Column(db.Integer, primary_key=False)
-#     Proj_ProjectId = db.Column(db.Integer, primary_key=False)
-#     DateStart = db.Column(db.Date(), primary_key=False)
-#     DateFinish = db.Column(db.Date(), primary_key=False)
-#     IsAdmin = db.Column(db.Boolean)
-#     IsCostController = db.Column(db.Boolean)
-#     IsFinance = db.Column(db.Boolean)
-#     AspNetUserId = db.Column(db.String(), primary_key=False)
-#
-#
-# #################################################################################################
-# ################ MODELS TECHNICAL  ##############################################################
-# #################################################################################################
-# class Employee(db.Model):
-#     __tablename__ = 'Employee'
-#     __bind_key__ = 'WebApps'
-#     __table_args__ = {u'schema': 'hr'}
-#     Id = db.Column(db.Integer(), primary_key=True)
-#     EmployeeName = db.Column(db.String(), unique=False)
-#     EmployeeNumber = db.Column(db.String(450), unique=False)
-#     EmployeeEmail = db.Column(db.String(50), unique=False)
-#     gen_CompanyId = db.Column(db.Integer(), db.ForeignKey('gen.Company.Id', ondelete='CASCADE'))
-#     EmployeeTelephone = db.Column(db.String(50), unique=False)
-#     dev_AspNetUsersId = db.Column(db.String(450), db.ForeignKey('AspNetUsers.id', ondelete='CASCADE'))
-#     tech_EquipmentStatusId = db.Column(db.Integer())
-#     hr_StandardFunctionId = db.Column(db.Integer())
-#     ContractualHours = db.Column(db.Float())
-#     hr_ContractualDaysId = db.Column(db.Integer())
-#     IsActive = db.Column(db.Boolean)
-#
-#     Remarks = db.Column(db.String())
-#     EID = db.Column(db.String())
-#     IsManpower = db.Column(db.Boolean)
-#     AppId = db.Column(db.Integer())
-#     CreatedBy = db.Column(db.String())
-#     CreatedOn = db.Column(db.DateTime())
-#     UpdatedBy = db.Column(db.String())
-#     UpdatedOn = db.Column(db.DateTime())
-#
-#     # relationships
-#     projectUsers = db.relationship("ProjectUser", back_populates="employee")
-#     projectUserActivity = db.relationship("ProjectUserActivity", back_populates="employee")
-#     userX = db.relationship("User", back_populates="hrEmployee")
-#     company = db.relationship("Company", back_populates="employee")
-#
-#     @property
-#     def serialize(self):
-#         return {
-#             'Id': self.Id,
-#             'EmployeeName': self.EmployeeName,
-#             'EmployeeNumber': self.EmployeeNumber,
-#             'EmployeeEmail': self.EmployeeEmail,
-#             'gen_CompanyId': self.gen_CompanyId,
-#             'EmployeeTelephone': self.EmployeeTelephone,
-#             'dev_AspNetUsersId': self.dev_AspNetUsersId,
-#             'tech_EquipmentStatusId': self.tech_EquipmentStatusId,
-#             'hr_StandardFunctionId': self.hr_StandardFunctionId,
-#         }
-#
-#
-# class EmployeeStatus(db.Model):
-#     __tablename__ = 'EmployeeStatus'
-#     __bind_key__ = 'WebApps'
-#     __table_args__ = {u'schema': 'hr'}
-#     Id = db.Column(db.Integer(), primary_key=True)
-#     EmployeeStatusName = db.Column(db.String(), unique=False)
-#     IsChargeable = db.Column(db.Boolean)
-#     projectUserHistory = db.relationship("ProjectUserHistory", back_populates="employeeStatus")
-#
+
+    # json
+    def json(self):
+        return {'name': self.username}
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'PasswordHash': self.PasswordHash,
+            'active': self.active,
+            'NameFirst': self.NameFirst,
+            'NameLast': self.NameLast,
+            # 'HR_EmployeeId': self.hrEmployee[0].Id,
+            # 'EmployeeNumber': self.hrEmployee[0].EmployeeNumber.strip(),
+            # 'FunctionName': self.FunctionName,
+            'FullName': self.FullName,
+            # 'ProjectIds': '-'.join([str(a.Id) for a in self.projectUsers]),
+        }
 
 class ProjectEmployerClassification(db.Model):
     __tablename__ = 'ProjectEmployerClassification'
@@ -178,6 +83,7 @@ class Project(db.Model):
     ProjectName = db.Column(db.String())
     ProjectNumber = db.Column(db.String())
     proj_ProjectEmployerClassificationId = db.Column(db.Integer)
+    Relevance_LessonsLearnt = db.Column(db.Boolean)
 
 class LLCategoryType(db.Model):
     __tablename__ = 'LLCategoryType'

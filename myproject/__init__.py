@@ -21,6 +21,8 @@ app.config['SECURITY_PASSWORD_SALT'] = 'aslkfj909'
 app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 db = SQLAlchemy(app, session_options={"autoflush": False})
 
+base_url='https://webapps.nmdc.ae'
+
 #############################################################################################
 ######################## FLASK SECURITY #####################################################
 #############################################################################################
@@ -34,6 +36,6 @@ from myproject.error_pages.handlers import error_pages
 app.register_blueprint(lessons_learnt_blueprint)
 app.register_blueprint(error_pages)
 
-@app.route('/')
-def index():
-    return redirect(url_for('LessonsLearnt.newlesson'))
+# @app.route('/')
+# def index():
+#     return redirect(url_for('LessonsLearnt.newlesson'))

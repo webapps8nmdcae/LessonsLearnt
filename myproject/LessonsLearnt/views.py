@@ -1,3 +1,4 @@
+import requests
 from flask import Blueprint, render_template, jsonify, request, current_app
 from openpyxl.styles import PatternFill
 
@@ -7,36 +8,72 @@ import json
 import csv
 from io import StringIO, BytesIO
 from datetime import datetime
-from flask import Blueprint, render_template, jsonify, request, current_app, Response, send_file
-
+from flask import Blueprint, render_template, jsonify, request, current_app, Response, send_file, session, request, redirect
+from myproject import base_url
+import requests
 lessons_learnt_blueprint = Blueprint('LessonsLearnt', __name__, template_folder='../templates')
+
+
+@lessons_learnt_blueprint.route('/login')
+def login():
+    token = request.args.get('token')
+    session['token'] = token # to get the token --> tokentest = session['token'] ////  print(tokentest)
+
+    # 2. Get the app id from the URL & check access
+    appid = request.args.get('appid')
+    url1 = base_url + '/DataAPI/api/Apps/GetUserAppAcces?AppId=' + appid
+    payload = {}
+    headers = {'Authorization': 'Bearer ' + token}
+    response1 = requests.request("GET", url1, headers=headers, data=payload)
+
+    if response1.text is not '':  # access
+        # session['loggings_token'] = token
+        user = User.query.filter_by(id=response1.text).first()
+      
+        # 3. Login the user
+        session.permanent = True
+        session['lessonslearnt_app'] = user.serialize
+        session['base_url'] = base_url
+        session['ApiUrl'] = base_url + "/DataAPI/api/"
+        return redirect('/lessonslearnt/newlesson')
+    else:
+        session['access'] = 'false'
+        notification = "Access to the application was rejected. Please contact dmwebapps@nmdc-group.com for assistance"
+        return redirect(base_url + '?noti='+notification)
 
 @lessons_learnt_blueprint.route('/home')
 def home():
+    if 'lessonslearnt_app' not in session:
+        return redirect(base_url)
     return render_template('LessonsLearnt/Home.html')
 
 @lessons_learnt_blueprint.route('/newlesson')
 def newlesson():
+    if 'lessonslearnt_app' not in session:
+        return redirect(base_url)
     return render_template('LessonsLearnt/newlesson.html')
 
 @lessons_learnt_blueprint.route('/viewlesson')
 def viewlesson():
+    if 'lessonslearnt_app' not in session:
+        return redirect(base_url)
     return render_template('LessonsLearnt/viewlesson.html')
 
 @lessons_learnt_blueprint.route('/fuel_management')
 def fuel_management():
+    if 'lessonslearnt_app' not in session:
+        return redirect(base_url)
     return render_template('LessonsLearnt/fuel_management.html')
-
-
-@lessons_learnt_blueprint.route('/GetLessonLearnClientName', methods=['GET'])
-def GetLessonLearnClientName():
-    clients = ProjectEmployerClassification.query.all()
-    client_list = [{'Id': client.Id, 'ClientName': client.ProjectEmployerClassificationName} for client in clients]
-    return jsonify({'client_list': client_list}), 200
 
 @lessons_learnt_blueprint.route('/GetMasterData', methods=['GET'])
 def GetMasterData():
-    projects = db.session.query(Project).order_by(Project.ProjectNumber, Project.ProjectName).all()
+    
+    user_id = session.get('lessonslearnt_app', {}).get('id')
+
+    if not user_id:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    projects = db.session.query(Project).filter(Project.Relevance_LessonsLearnt == 1).order_by(Project.ProjectNumber, Project.ProjectName).all()
     clients = db.session.query(ProjectEmployerClassification).order_by(ProjectEmployerClassification.ProjectEmployerClassificationName).all()
     categories = db.session.query(LessonLearnCategory, LLCategoryType).join(LLCategoryType, LessonLearnCategory.qhse_LLCategoryTypeId == LLCategoryType.Id).order_by(LessonLearnCategory.qhse_LLCategoryTypeId, LessonLearnCategory.Category).all()
     subcategories = db.session.query(LessonLearnSubCategory, LessonLearnCategory, LLCategoryType).join(LessonLearnCategory, LessonLearnSubCategory.qhse_LessonLearnCategoryId == LessonLearnCategory.Id).join(LLCategoryType, LessonLearnCategory.qhse_LLCategoryTypeId == LLCategoryType.Id).order_by(LessonLearnSubCategory.qhse_LessonLearnCategoryId, LessonLearnSubCategory.SubCategory).all()
@@ -44,7 +81,7 @@ def GetMasterData():
     impactareas = db.session.query(LessonLearnPrimaryBusinessImpact).order_by(LessonLearnPrimaryBusinessImpact.Id).all()
     
     users = db.session.query(User).all()
-    user_dict = {str(u.Id): u.FullName for u in users if u.FullName}
+    user_dict = {str(u.id): u.FullName for u in users if u.FullName}
 
     def get_expertise_names(expertise_id_str):
         if not expertise_id_str:
@@ -72,6 +109,7 @@ def GetMasterData():
 @lessons_learnt_blueprint.route('/SaveLessonLearn', methods=['POST'])
 def SaveLessonLearn():    
     try:
+        createdbyid = session.get('lessonslearnt_app', {}).get('id')
         origin_type = request.form.get('originType')
         project_id = request.form.get('project')
         client_id = request.form.get('client')
@@ -109,7 +147,7 @@ def SaveLessonLearn():
             IsProject=bool(is_project),
             proj_ProjectEmployerClassificationId=client_id if client_id else None,
             IsArchived=0,
-            CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
+            CreatedBy=createdbyid,
             CreatedOn=now
         )
         db.session.add(new_form)
@@ -122,7 +160,7 @@ def SaveLessonLearn():
                 qhse_LLCategoryTypeId=item.get('categoryTypeId'),
                 qhse_LLCategoryId=item.get('categoryId'),
                 qhse_LLSubCategoryId=item.get('subCategoryId'),
-                CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
+                CreatedBy=createdbyid,
                 CreatedOn=now
             )
             db.session.add(new_cat)
@@ -131,7 +169,7 @@ def SaveLessonLearn():
             new_exp = LessonLearnFormExpertise(
                 ExpertiseId=exp_id,
                 qhse_LessonLearnFormId=form_id,
-                CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
+                CreatedBy=createdbyid,
                 CreatedOn=now
             )
             db.session.add(new_exp)
@@ -168,7 +206,7 @@ def SaveLessonLearn():
             hr_EmployeeId=5864,
             Comments=recommendations,
             qshe_LLApprovalStatusId=0,
-            CreatedBy='524da441-2a52-4c3f-88bf-dff51ae89311',
+            CreatedBy=createdbyid,
             CreatedOn=now,
             qhse_LessonLearnPriorityLevelId = priority_id,
             qhse_LessonLearnPrimaryBusinessImpactId = impact_area_id
@@ -230,7 +268,7 @@ def SearchLessonLearn():
             return jsonify({'status': 'info', 'message': 'No data found.'}), 200
         
         users = db.session.query(User).all()
-        user_dict = {str(u.Id): u.FullName for u in users if u.FullName}
+        user_dict = {str(u.id): u.FullName for u in users if u.FullName}
 
         formatted_results = []
         for row in results:
@@ -392,7 +430,7 @@ def ExportLessonsLearnt():
             return jsonify({'status': 'info', 'message': 'No data found for the selected criteria.'}), 200
         
         users = db.session.query(User).all()
-        user_dict = {str(u.Id): u.FullName for u in users if u.FullName}
+        user_dict = {str(u.id): u.FullName for u in users if u.FullName}
 
         # We will use openpyxl for Excel formatting
         try:

@@ -430,7 +430,7 @@
 
         // Load Master Data
         $.ajax({
-            url: '/GetMasterData',
+            url: '{{ url_for("LessonsLearnt.GetMasterData") }}',
             type: 'GET',
             success: function(response) {
                 masterData = response;
@@ -698,7 +698,7 @@
             }
 
             $.ajax({
-                url: '/ExportLessonsLearnt',
+                url: '{{ url_for("LessonsLearnt.ExportLessonsLearnt") }}',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(searchParams),
@@ -761,7 +761,7 @@
                 if (result.isConfirmed) {
                     $('#global-loader').css('display', 'flex');
                     $.ajax({
-                        url: '/DeleteLessonLearn',
+                        url: '{{ url_for("LessonsLearnt.DeleteLessonLearn") }}',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ id: id }),
@@ -802,7 +802,7 @@
             };
             
             $.ajax({
-                url: '/SearchLessonLearn',
+                url: '{{ url_for("LessonsLearnt.SearchLessonLearn") }}',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(searchParams),

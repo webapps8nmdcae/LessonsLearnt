@@ -474,7 +474,7 @@
 
     function loadMasterData() {
         $.ajax({
-            url: '/GetMasterData',
+            url: '{{ url_for("LessonsLearnt.GetMasterData") }}',
             method: 'GET',
             success: function(response) {
                 masterData.categories = response.categories;
@@ -512,8 +512,8 @@
 
                 bindCategoryDropdown();
             },
-            error: function() {
-                console.error("Failed to load master data");
+            error: function(xhr, status, error) {
+                console.error("Failed to load master data:", error);
             }
         });
     }
@@ -896,7 +896,7 @@
                         formData.append('formCategoryData', JSON.stringify(formCategoryData));
                         
                         $.ajax({
-                            url: '/SaveLessonLearn',
+                            url: '{{ url_for("LessonsLearnt.SaveLessonLearn") }}',
                             type: 'POST',
                             data: formData,
                             processData: false,
