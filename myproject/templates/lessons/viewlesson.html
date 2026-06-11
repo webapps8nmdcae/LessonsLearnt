@@ -1,4 +1,4 @@
-{% extends 'LessonsLearnt/Base.html' %}
+{% extends 'lessons/Base.html' %}
 {% block title %}View Lessons Learnt{% endblock %}
 {% block content %}
     <!-- <nav aria-label="breadcrumb" class="premium-breadcrumb mb-4">
@@ -430,7 +430,7 @@
 
         // Load Master Data
         $.ajax({
-            url: '{{ url_for("LessonsLearnt.GetMasterData") }}',
+            url: 'GetMasterData',
             type: 'GET',
             success: function(response) {
                 masterData = response;
@@ -698,7 +698,7 @@
             }
 
             $.ajax({
-                url: '{{ url_for("LessonsLearnt.ExportLessonsLearnt") }}',
+                url: 'ExportLessonsLearnt',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(searchParams),
@@ -761,7 +761,7 @@
                 if (result.isConfirmed) {
                     $('#global-loader').css('display', 'flex');
                     $.ajax({
-                        url: '{{ url_for("LessonsLearnt.DeleteLessonLearn") }}',
+                        url: 'DeleteLessonLearn',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ id: id }),
@@ -802,7 +802,7 @@
             };
             
             $.ajax({
-                url: '{{ url_for("LessonsLearnt.SearchLessonLearn") }}',
+                url: 'SearchLessonLearn',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(searchParams),

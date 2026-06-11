@@ -11,13 +11,13 @@ def CreateSessionWebApps():
     return sessionWebApps
 
 #
-# class Role(db.Model):
-#     __tablename__ = 'AspNetRoles'
-#     __bind_key__ = 'WebApps'
-#     id = db.Column(db.String(450), primary_key=True)
-#     name = db.Column(db.String(450), unique=True)
-#     NormalizedName=db.Column(db.String(450), unique=True)
-#     Description = db.Column(db.String(500),primary_key=False)
+class Role(db.Model):
+    __tablename__ = 'AspNetRoles'
+    __bind_key__ = 'WebApps'
+    id = db.Column(db.String(450), primary_key=True)
+    name = db.Column(db.String(450), unique=True)
+    NormalizedName=db.Column(db.String(450), unique=True)
+    Description = db.Column(db.String(500),primary_key=False)
 #
 #
 # class UserRoles(db.Model):
@@ -45,6 +45,8 @@ class User(db.Model):
     FunctionName = db.Column(db.String(500), primary_key=False)
     FullName = db.Column(db.String(500), primary_key=False)
 
+    # relationships
+    # roles = db.relationship('Role', secondary='AspNetUserRoles')
     # json
     def json(self):
         return {'name': self.username}
@@ -65,6 +67,15 @@ class User(db.Model):
             'FullName': self.FullName,
             # 'ProjectIds': '-'.join([str(a.Id) for a in self.projectUsers]),
         }
+
+class UserRole(db.Model):
+    __tablename__ = 'AspNetUserRoles'
+    __bind_key__ = 'WebApps'
+    id = db.Column(db.Integer(), primary_key=True)
+    UserId = db.Column(db.String(450), db.ForeignKey('AspNetUsers.id', ondelete='CASCADE'))
+    RoleId = db.Column(db.String(450), db.ForeignKey('AspNetRoles.id', ondelete='CASCADE'))
+    CreatedBy = db.Column(db.NVARCHAR(max), nullable=True)
+    CreatedOn = db.Column(db.DateTime, nullable=True)
 
 class ProjectEmployerClassification(db.Model):
     __tablename__ = 'ProjectEmployerClassification'

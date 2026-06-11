@@ -1,5 +1,5 @@
 import requests
-from flask import Blueprint, render_template, jsonify, request, current_app
+from flask import Blueprint, render_template, jsonify, request, current_app, Response, send_file, session, request, redirect
 from openpyxl.styles import PatternFill
 
 from myproject.models import *
@@ -8,10 +8,24 @@ import json
 import csv
 from io import StringIO, BytesIO
 from datetime import datetime
-from flask import Blueprint, render_template, jsonify, request, current_app, Response, send_file, session, request, redirect
+# from flask import Blueprint, render_template, jsonify, request, current_app
 from myproject import base_url
 import requests
-lessons_learnt_blueprint = Blueprint('LessonsLearnt', __name__, template_folder='../templates')
+
+lessons_learnt_blueprint = Blueprint('lessons', __name__, template_folder='/templates')
+
+
+# @lessons_learnt_blueprint.before_request
+# def check_admin_access():
+#     if request.endpoint in ['lessons.login', 'lessons.unauthorized', 'lessons.chrome_devtools_workaround', 'lessons.favicon_workaround']:
+#         return
+#     if session.get('userrole') != 'DNM_LESSONS_LEARNT_ADMIN':
+#         return redirect('/LessonsLearnt/lessons/unauthorized')
+
+@lessons_learnt_blueprint.route('/unauthorized')
+def unauthorized():
+    return render_template('error_pages/unauthorized.html')
+
 
 
 @lessons_learnt_blueprint.route('/login')
@@ -29,17 +43,47 @@ def login():
     if response1.text is not '':  # access
         # session['loggings_token'] = token
         user = User.query.filter_by(id=response1.text).first()
-      
+        print("user: ", user.serialize)
         # 3. Login the user
         session.permanent = True
         session['lessonslearnt_app'] = user.serialize
         session['base_url'] = base_url
         session['ApiUrl'] = base_url + "/DataAPI/api/"
-        return redirect('/lessonslearnt/newlesson')
+
+        if check_lesson_Learnt_role_access():
+            return redirect('/LessonsLearnt/lessons/newlesson')
+        else:
+            return redirect('/LessonsLearnt/lessons/unauthorized')
     else:
         session['access'] = 'false'
         notification = "Access to the application was rejected. Please contact dmwebapps@nmdc-group.com for assistance"
         return redirect(base_url + '?noti='+notification)
+
+
+def check_lesson_Learnt_role_access():
+    user_id = session.get('lessonslearnt_app', {}).get('id')
+    if not user_id:
+        return redirect(base_url)
+    
+    admin_role_subquery = db.session.query(Role.id).filter(Role.name == 'DNM_LESSONS_LEARNT_ADMIN')
+    user_role = db.session.query(UserRole).filter(
+        UserRole.RoleId.in_(admin_role_subquery),
+        UserRole.UserId == str(user_id)
+    ).first()
+    print("user_role: ", user_role)
+    if user_role:
+        return True
+    else:
+        return False
+
+@lessons_learnt_blueprint.route('/.well-known/appspecific/com.chrome.devtools.json')
+def chrome_devtools_workaround():
+    return {}, 204  # Returns empty response with "No Content" status
+
+@lessons_learnt_blueprint.route('/favicon.ico')
+def favicon_workaround():
+    return {}, 204  # Returns empty response with "No Content" status
+
 
 @lessons_learnt_blueprint.route('/home')
 def home():
@@ -51,21 +95,31 @@ def home():
 def newlesson():
     if 'lessonslearnt_app' not in session:
         return redirect(base_url)
-    return render_template('LessonsLearnt/newlesson.html')
+
+    if check_lesson_Learnt_role_access():
+        return render_template('lessons/newlesson.html')
+    else:
+        return redirect('/LessonsLearnt/lessons/unauthorized')
+
+    # return render_template('lessons/newlesson.html')
 
 @lessons_learnt_blueprint.route('/viewlesson')
 def viewlesson():
     if 'lessonslearnt_app' not in session:
         return redirect(base_url)
-    return render_template('LessonsLearnt/viewlesson.html')
+
+    if check_lesson_Learnt_role_access():
+        return render_template('lessons/viewlesson.html')
+    else:
+        return redirect('/LessonsLearnt/lessons/unauthorized')
 
 @lessons_learnt_blueprint.route('/fuel_management')
 def fuel_management():
     if 'lessonslearnt_app' not in session:
         return redirect(base_url)
-    return render_template('LessonsLearnt/fuel_management.html')
+    return render_template('lessons/fuel_management.html')
 
-@lessons_learnt_blueprint.route('/GetMasterData', methods=['GET'])
+@lessons_learnt_blueprint.route('GetMasterData', methods=['GET'])
 def GetMasterData():
     
     user_id = session.get('lessonslearnt_app', {}).get('id')
@@ -106,7 +160,7 @@ def GetMasterData():
         'impactareas': impactareas_list
     }), 200
 
-@lessons_learnt_blueprint.route('/SaveLessonLearn', methods=['POST'])
+@lessons_learnt_blueprint.route('SaveLessonLearn', methods=['POST'])
 def SaveLessonLearn():    
     try:
         createdbyid = session.get('lessonslearnt_app', {}).get('id')
@@ -219,7 +273,7 @@ def SaveLessonLearn():
         db.session.rollback()
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@lessons_learnt_blueprint.route('/SearchLessonLearn', methods=['POST'])
+@lessons_learnt_blueprint.route('SearchLessonLearn', methods=['POST'])
 def SearchLessonLearn():
     try:
         data = request.json
@@ -339,7 +393,7 @@ def SearchLessonLearn():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@lessons_learnt_blueprint.route('/DeleteLessonLearn', methods=['POST'])
+@lessons_learnt_blueprint.route('DeleteLessonLearn', methods=['POST'])
 def DeleteLessonLearn():
     try:
         data = request.json
@@ -382,7 +436,7 @@ def DeleteLessonLearn():
         db.session.rollback()
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-@lessons_learnt_blueprint.route('/ExportLessonsLearnt', methods=['POST'])
+@lessons_learnt_blueprint.route('ExportLessonsLearnt', methods=['POST'])
 def ExportLessonsLearnt():
     try:
         data = request.json

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>NMDC | Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="NMDC | 404 Not found" name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />   
+
+    <link href="/LessonsLearnt/static/css_js/fonts.css" rel="stylesheet">
+    <link href="/LessonsLearnt/static/css_js/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/LessonsLearnt/static/css_js/font-awesome.min.css">
+    <link href="/LessonsLearnt/static/css_js/select2.min.css" rel="stylesheet">
+    <link href="/LessonsLearnt/static/css_js/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+    <link href="/LessonsLearnt/static/css_js/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="/LessonsLearnt/static/css_js/responsive.bootstrap5.min.css" rel="stylesheet">
+    <script src="/LessonsLearnt/static/css_js/jquery-3.7.1.min.js"></script>
+    <link rel="shortcut icon" href="/LessonsLearnt/static/assets/image/favicon.ico">
+
+    <!-- JS Plugins -->
+    <script src="/LessonsLearnt/static/css_js/bootstrap.bundle.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/select2.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/sweetalert2.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/jquery.dataTables.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/dataTables.bootstrap5.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/dataTables.responsive.min.js"></script>
+    <script src="/LessonsLearnt/static/css_js/responsive.bootstrap5.min.js"></script>
+</head>
+
+<body class="authentication-bg">
+    <style>
+        body.authentication-bg {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .error-container {
+            text-align: center;
+            padding: 50px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s ease-out;
+            max-width: 600px;
+            width: 100%;
+        }
+        .text-error {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .text-error i {
+            font-size: 6rem;
+            color: #00d2ff;
+            -webkit-text-fill-color: initial;
+            margin: 0 10px;
+        }
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+        .error-desc {
+            font-size: 1.1rem;
+            color: #d1d5db;
+            margin-bottom: 35px;
+        }
+        .btn-return {
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            border: none;
+            padding: 12px 35px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        }
+        .btn-return:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 210, 255, 0.5);
+            color: #fff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <div class="account-pages w-100">
+        <div class="container d-flex justify-content-center">
+            <div class="error-container">
+                <div class="text-error">404</div>
+                <h3 class="error-title">Page not Found</h3>
+                <p class="error-desc">
+                    It's looking like you may have taken a wrong turn.
+                </p>
+                <a href="https://webapps.nmdc.ae/" class="btn-return">
+                    <i class="fa fa-home"></i> Return to WebApps
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

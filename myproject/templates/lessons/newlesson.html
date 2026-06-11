@@ -1,4 +1,4 @@
-{% extends 'LessonsLearnt/Base.html' %}
+{% extends 'lessons/Base.html' %}
 {% block title %}New Lesson Learnt{% endblock %}
 {% block content %}
     <!-- <nav aria-label="breadcrumb" class="premium-breadcrumb mb-4">
@@ -474,7 +474,7 @@
 
     function loadMasterData() {
         $.ajax({
-            url: '{{ url_for("LessonsLearnt.GetMasterData") }}',
+            url: 'GetMasterData',
             method: 'GET',
             success: function(response) {
                 masterData.categories = response.categories;
@@ -896,7 +896,7 @@
                         formData.append('formCategoryData', JSON.stringify(formCategoryData));
                         
                         $.ajax({
-                            url: '{{ url_for("LessonsLearnt.SaveLessonLearn") }}',
+                            url: 'SaveLessonLearn',
                             type: 'POST',
                             data: formData,
                             processData: false,
