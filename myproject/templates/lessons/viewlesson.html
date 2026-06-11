@@ -14,31 +14,31 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md">
                     <label class="form-label">Project</label>
                     <select class="form-select select2" id="searchProject">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md">
                     <label class="form-label">Client</label>
                     <select class="form-select select2" id="searchClient">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md">
                     <label class="form-label">Category</label>
                     <select class="form-select select2" id="searchCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md">
                     <label class="form-label">Sub Category</label>
                     <select class="form-select select2" id="searchSubCategory">
                         <option value="">All</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md">
                     <label class="form-label">Status</label>
                     <select class="form-select select2" id="searchStatus">
                         <option value="">All</option>
@@ -259,6 +259,42 @@
         .tooltip.bs-tooltip-auto[data-popper-placement^=bottom] .tooltip-arrow::before {
             border-bottom-color: #1e293b !important;
         }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+            white-space: pre-wrap; /* Preserve line breaks */
+            word-wrap: break-word; /* Allow long words to break */
+        }
+        .line-clamp-none {
+            display: block;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Select2 Optgroup Spacing */
+        .select2-results__group {
+            padding-top: 12px !important;
+            padding-bottom: 8px !important;
+            margin-top: 4px !important;
+            margin-bottom: 8px !important;
+            color: var(--header-blue, #00508f) !important;
+            font-weight: 700 !important;
+            /* border-bottom: 1px solid #eaedf1; */
+        }
+        
+        /* Space between optgroup header and the first option */
+        .select2-results__options--nested {
+            padding-top: 6px !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__option {
+            padding: 4px 10px !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[role=group] .select2-results__group {
+            padding: 0.200rem !important;
+        }
     </style>
 
     <div class="premium-card">
@@ -340,17 +376,37 @@
 <script>
     let masterData = {};
 
-    function createTruncatedCell(text, maxLength = 40) {
+    function populateSubCatGroups(selectElement, subcategories) {
+        let subCatGroups = {};
+        subcategories.forEach(function(sc) {
+            if (!subCatGroups[sc.Category]) {
+                subCatGroups[sc.Category] = [];
+            }
+            subCatGroups[sc.Category].push(sc);
+        });
+        
+        for (const category in subCatGroups) {
+            let optgroup = $('<optgroup>').attr('label', category);
+            subCatGroups[category].forEach(function(sc) {
+                optgroup.append(new Option(sc.SubCategory, sc.Id));
+            });
+            selectElement.append(optgroup);
+        }
+    }
+
+    function createTruncatedCell(text, threshold = 100) {
         if (!text || text === '-') return '-';
-        if (text.length > maxLength) {
-            let truncatedText = text.substring(0, maxLength);
-            let titleText = text.replace(/"/g, '&quot;');
-            return `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${titleText}">
-                <span class="short-text">${truncatedText}</span><span class="d-none full-text">${text}</span>
-                <a href="javascript:void(0);" class="show-more-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 2px;">... Show More</a>
+        let titleText = text.replace(/"/g, '&quot;');
+        let lines = text.split('\n').length;
+        if (text.length > threshold || lines > 3) {
+            return `<div class="content-cell">
+                <div class="text-content line-clamp-3" title="${titleText}">${text}</div>
+                <a href="javascript:void(0);" class="show-more-btn" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-top: 2px; display: inline-block;">Show More</a>
             </div>`;
         }
-        return `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${text.replace(/"/g, '&quot;')}">${text}</div>`;
+        return `<div class="content-cell">
+            <div class="text-content" style="white-space: pre-wrap; word-wrap: break-word;">${text}</div>
+        </div>`;
     }
 
     $(document).ready(function() {
@@ -449,15 +505,25 @@
                 
                 // Populate Category dropdown
                 let categorySelect = $('#searchCategory');
+                let categoryGroups = {};
                 response.categories.forEach(function(c) {
-                    categorySelect.append(new Option(c.CategoryType + ' - ' + c.Category, c.Id));
+                    if (!categoryGroups[c.CategoryType]) {
+                        categoryGroups[c.CategoryType] = [];
+                    }
+                    categoryGroups[c.CategoryType].push(c);
                 });
+                
+                for (const type in categoryGroups) {
+                    let optgroup = $('<optgroup>').attr('label', type);
+                    categoryGroups[type].forEach(function(c) {
+                        optgroup.append(new Option(c.Category, c.Id));
+                    });
+                    categorySelect.append(optgroup);
+                }
 
                 // Populate Sub Category dropdown
                 let subCatSelect = $('#searchSubCategory');
-                response.subcategories.forEach(function(sc) {
-                    subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
-                });
+                populateSubCatGroups(subCatSelect, response.subcategories);
                 
                 // Perform initial search
                 performSearch();
@@ -475,21 +541,42 @@
             setTimeout(function() {
                 subCatSelect.empty().append(new Option('All', ''));
                 if (catId) {
-                    masterData.subcategories.filter(sc => sc.CategoryId == catId).forEach(function(sc) {
-                        subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
-                    });
+                    populateSubCatGroups(subCatSelect, masterData.subcategories.filter(sc => sc.CategoryId == catId));
                 } else {
-                    masterData.subcategories.forEach(function(sc) {
-                        subCatSelect.append(new Option(sc.Category + ' - ' + sc.SubCategory, sc.Id));
-                    });
+                    populateSubCatGroups(subCatSelect, masterData.subcategories);
                 }
                 performSearch();
                 setTimeout(() => $('#global-loader').css('display', 'none'), 500);
             }, 10);
         });
 
+        // Project change binding to update Client
+        $('#searchProject').on('change', function() {
+            $('#global-loader').css('display', 'flex');
+            let selectedProjectId = $(this).val();
+            setTimeout(function() {
+                let currentClient = $('#searchClient').val();
+                let newClient = '';
+                
+                if (selectedProjectId) {
+                    let selectedProject = masterData.projects.find(p => p.Id == selectedProjectId);
+                    if (selectedProject && selectedProject.ClassificationId) {
+                        newClient = selectedProject.ClassificationId;
+                    }
+                }
+                
+                if (currentClient != newClient) {
+                    $('#searchClient').val(newClient).trigger('change');
+                } else {
+                    performSearch();
+                }
+                
+                setTimeout(() => $('#global-loader').css('display', 'none'), 500);
+            }, 10);
+        });
+
         // Trigger search on other dropdown changes
-        $('#searchProject, #searchClient, #searchSubCategory, #searchStatus').on('change', function() {
+        $('#searchClient, #searchSubCategory, #searchStatus').on('change', function() {
             performSearch();
         });
         
@@ -836,15 +923,16 @@
                                     return item.Category + (item.SubCategory ? `: ${item.SubCategory}` : '');
                                 });
                                 let fullText = subCatItems.join(', ');
-                                let maxLength = 40;
-                                if (fullText.length > maxLength) {
-                                    let truncatedText = fullText.substring(0, maxLength);
-                                    catSubCatHtml = `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${fullText}">
-                                        <span class="short-text">${truncatedText}</span><span class="d-none full-text">${fullText}</span>
-                                        <a href="javascript:void(0);" class="show-more-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 2px;">... Show More</a>
+                                let threshold = 100;
+                                let lines = fullText.split('\n').length;
+                                let titleText = fullText.replace(/"/g, '&quot;');
+                                if (fullText.length > threshold || lines > 3) {
+                                    catSubCatHtml = `<div class="content-cell">
+                                        <div class="text-content line-clamp-3" title="${titleText}">${fullText}</div>
+                                        <a href="javascript:void(0);" class="show-more-btn" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-top: 2px; display: inline-block;">Show More</a>
                                     </div>`;
                                 } else {
-                                    catSubCatHtml = `<div class="subcategory-cell" data-bs-toggle="tooltip" data-bs-placement="top" title="${fullText}">${fullText}</div>`;
+                                    catSubCatHtml = `<div class="content-cell"><div class="text-content" style="white-space: pre-wrap; word-wrap: break-word;">${fullText}</div></div>`;
                                 }
                             } else {
                                 catSubCatHtml = '-';
@@ -920,27 +1008,24 @@
             });
         }
 
-        // Handle Show More / Show Less for Sub Category
-        $('#lessonsTable').on('click', '.show-more-link', function(e) {
+        // Handle Show More / Show Less for long text cells
+        $('#lessonsTable').on('click', '.show-more-btn', function(e) {
             e.preventDefault();
-            let container = $(this).closest('.subcategory-cell');
-            container.find('.short-text').addClass('d-none');
-            container.find('.full-text').removeClass('d-none');
-            $(this).addClass('d-none');
-            container.append('<a href="javascript:void(0);" class="show-less-link" style="color: #00508f; font-weight: 600; text-decoration: none; font-size: 11px; margin-left: 4px;"> Show Less</a>');
+            let container = $(this).closest('.content-cell');
+            let textContent = container.find('.text-content');
             
-            // Hide tooltip when expanding to prevent it from getting stuck
-            let tooltip = bootstrap.Tooltip.getInstance(container[0]);
-            if (tooltip) { tooltip.hide(); }
-        });
-        
-        $('#lessonsTable').on('click', '.show-less-link', function(e) {
-            e.preventDefault();
-            let container = $(this).closest('.subcategory-cell');
-            container.find('.full-text').addClass('d-none');
-            container.find('.short-text').removeClass('d-none');
-            container.find('.show-more-link').removeClass('d-none');
-            $(this).remove();
+            if (textContent.hasClass('line-clamp-3')) {
+                textContent.removeClass('line-clamp-3').addClass('line-clamp-none');
+                $(this).text('Show Less');
+            } else {
+                textContent.removeClass('line-clamp-none').addClass('line-clamp-3');
+                $(this).text('Show More');
+            }
+            
+            // Re-adjust columns in case height changed
+            if ($.fn.DataTable.isDataTable('#lessonsTable')) {
+                $('#lessonsTable').DataTable().columns.adjust();
+            }
         });
     });
 </script>

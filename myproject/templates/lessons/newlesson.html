@@ -9,8 +9,8 @@
     </nav> -->
 
     <form id="newLessonForm" class="premium-card">
-        <div class="card-header d-flex justify-content-between align-items-center py-1">
-            <div class="d-flex align-items-center gap-3">
+        <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center py-2 gap-2">
+            <div class="d-flex flex-column flex-sm-row align-items-center gap-3 w-100 w-md-auto justify-content-center justify-content-md-start">
                 <div class="d-flex align-items-center gap-3">
                     <span class="fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px; white-space: nowrap; color: var(--navy-mid);">Lesson Category <span class="text-danger">*</span></span>
                     <div class="d-flex align-items-center gap-3">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 w-100 w-md-auto justify-content-center justify-content-md-end mt-2 mt-md-0">
                 <button type="button" id="btnClearForm" class="btn btn-light text-uppercase fw-bold shadow-sm" style="border: 1px solid #ccd0d5; color: #555; font-size: 11px; padding: 5px 12px;">
                     <i class="fa-solid fa-times"></i> Clear
                 </button>
@@ -227,18 +227,18 @@
                                     <div class="row">
                                         <div class="col-md-3 border-end">
                                             <label class="form-label text-muted text-uppercase mb-2">Category</label>
-                                            <div class="list-group p-2" id="categoryListGroup" role="tablist" style="max-height: 65%; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
+                                            <div class="list-group p-2" id="categoryListGroup" role="tablist" style="max-height: 228px; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
                                             </div>
                                         </div>
                                         <div class="col-md-3 border-end">
                                             <label class="form-label text-muted text-uppercase mb-1">Sub Category</label>
-                                            <div id="subCategoryCheckboxList" class="p-2" style="max-height: 65%; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
+                                            <div id="subCategoryCheckboxList" class="p-2" style="max-height: 228px; overflow-y: auto; background: #fff; border: 1px solid #dee2e6; border-radius: 4px;">
                                                 <div class="text-muted p-2" style="text-transform: uppercase;">Select a category to view sub category.</div>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label text-muted text-uppercase mb-1">Selected Sub Category <span class="text-danger">*</span></label>
-                                            <div id="selectedSubCategoriesContainer" class="p-2 border rounded" style="max-height: 65%; overflow-y: auto; background: #fff;">
+                                            <div id="selectedSubCategoriesContainer" class="p-2 border rounded" style="max-height: 228px; overflow-y: auto; background: #fff;">
                                                 <div class="text-muted text-center" style="text-transform: uppercase;">No data selected</div>
                                             </div>
                                             <input type="hidden" id="selectedSubCategoryIds" name="subCategory" required>
@@ -469,7 +469,8 @@
 
     var masterData = {
         categories: [],
-        subcategories: []
+        subcategories: [],
+        projects: []
     };
 
     function loadMasterData() {
@@ -481,6 +482,7 @@
                 masterData.subcategories = response.subcategories;
                 masterData.priorities = response.priorities;
                 masterData.impactareas = response.impactareas;
+                masterData.projects = response.projects;
 
                 // Bind Projects
                 var projectSelect = $('#project');
@@ -745,6 +747,25 @@
 
         // Load data on page load
         loadMasterData();
+
+        // Auto-select Client based on selected Project
+        $('#project').on('change', function() {
+            $('#global-loader').css('display', 'flex');
+            var selectedProjectId = $(this).val();
+            setTimeout(function() {
+                if (selectedProjectId) {
+                    var selectedProject = masterData.projects.find(p => p.Id == selectedProjectId);
+                    if (selectedProject && selectedProject.ClassificationId) {
+                        $('#client').val(selectedProject.ClassificationId).trigger('change');
+                    } else {
+                        $('#client').val('').trigger('change');
+                    }
+                } else {
+                    $('#client').val('').trigger('change');
+                }
+                $('#global-loader').hide();
+            }, 300);
+        });
 
         // Toggle category tabs based on Lesson Category radio selection
         $('input[name="originType"]').on('change', function() {
